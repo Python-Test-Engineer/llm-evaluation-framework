@@ -1,4 +1,4 @@
-#Pytest -
+# Pytest -
 import os
 
 import pytest
@@ -9,39 +9,39 @@ from ragas.llms import LangchainLLMWrapper
 from ragas.metrics import LLMContextPrecisionWithoutReference
 
 
-#user_input -> query
-#response -> response
-#reference -> Ground truth
-#retrived_context -> Top k retrieved docs
+# user_input -> query
+# response -> response
+# reference -> Ground truth
+# retrived_context -> Top k retrieved docs
+
 
 @pytest.mark.asyncio
 async def test_context_precision():
     # create object of class for that specific metric
-  
-    #power of LLM + method metric ->score
-    llm = ChatOpenAI(model="gpt-4", temperature=0)
+
+    # power of LLM + method metric ->score
+    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
     langchain_llm = LangchainLLMWrapper(llm)
     context_precision = LLMContextPrecisionWithoutReference(llm=langchain_llm)
     question = "How many articles are there in the Selenium webdriver python course?"
     # Feed data -
-    responseDict = requests.post("https://rahulshettyacademy.com/rag-llm/ask",
-                                 json={
-                                     "question": question,
-                                     "chat_history": [
-                                     ]
-                                 }).json()
+    responseDict = requests.post(
+        "https://rahulshettyacademy.com/rag-llm/ask",
+        json={"question": question, "chat_history": []},
+    ).json()
     print(responseDict)
-
 
     sample = SingleTurnSample(
         user_input=question,
         response=responseDict["answer"],
-        retrieved_contexts=[responseDict["retrieved_docs"][0]["page_content"], responseDict["retrieved_docs"][1]["page_content"],
-                            responseDict["retrieved_docs"][2]["page_content"]]
-
+        retrieved_contexts=[
+            responseDict["retrieved_docs"][0]["page_content"],
+            responseDict["retrieved_docs"][1]["page_content"],
+            responseDict["retrieved_docs"][2]["page_content"],
+        ],
     )
 
-    #score
+    # score
     score = await context_precision.single_turn_ascore(sample)
     print(score)
     assert score > 0.8

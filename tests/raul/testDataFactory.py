@@ -1,24 +1,27 @@
 import os
 
 import pytest
-from langchain_community.document_loaders import DirectoryLoader, UnstructuredWordDocumentLoader
+from langchain_community.document_loaders import (
+    DirectoryLoader,
+    UnstructuredWordDocumentLoader,
+)
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from ragas.embeddings import LangchainEmbeddingsWrapper
 from ragas.llms import LangchainLLMWrapper
 from ragas.testset import TestsetGenerator
 import nltk
 
-#LLM - 3 docs
+# LLM - 3 docs
 
 
 nltk.data.path.append("/Users/rahulshetty/documents/nltk_data/")
-llm = ChatOpenAI(model="gpt-4", temperature=0)
+llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 langchain_llm = LangchainLLMWrapper(llm)
 embed = OpenAIEmbeddings()
 loader = DirectoryLoader(
     path="/Users/rahulshetty/documents/fs11/",
     glob="**/*.docx",
-    loader_cls=UnstructuredWordDocumentLoader
+    loader_cls=UnstructuredWordDocumentLoader,
 )
 docs = loader.load()
 generate_embeddings = LangchainEmbeddingsWrapper(embed)

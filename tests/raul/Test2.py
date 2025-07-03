@@ -12,7 +12,7 @@ from ragas.metrics import LLMContextRecall
 async def test_context_recall():
 
     question = "How many articles are there in the Selenium webdriver python course?"
-    llm = ChatOpenAI(model="gpt-4", temperature=0)
+    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
     lang_chain_llm = LangchainLLMWrapper(llm)
     context_recall = LLMContextRecall(llm=lang_chain_llm)
     responseDict = requests.post("https://rahulshettyacademy.com/rag-llm/ask",
