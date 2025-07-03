@@ -1,6 +1,0 @@
-0160|test_0160_basic_auth|tests/10_api_pets/test_authentics.py::test_0160_basic_auth|PASSED|0.885634|
-url|test_url|tests/10_api_pets/test_pets.py::test_url|PASSED|0.000207|
-0161|test_0161_post_pet|tests/10_api_pets/test_pets.py::test_0161_post_pet|PASSED|0.357845|
-0162|test_0162_get_pet_by_id|tests/10_api_pets/test_pets.py::test_0162_get_pet_by_id|FAILED|0.355492|
-0163|test_0163_update_pet|tests/10_api_pets/test_pets.py::test_0163_update_pet|PASSED|0.356567|
-0164|test_0164_delete_delete_pet_by_id|tests/10_api_pets/test_pets.py::test_0164_delete_delete_pet_by_id|FAILED|0.355118|

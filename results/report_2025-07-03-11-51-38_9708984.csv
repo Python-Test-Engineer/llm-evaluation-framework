@@ -1,5 +1,0 @@
-0171|test_0171_users_api|tests/20_playwright/api/test_02_api_context.py::test_0171_users_api|PASSED|0.29762|
-0172|test_0172_users_search|tests/20_playwright/api/test_03_user_search.py::test_0172_users_search|PASSED|0.116724|
-0175|test_0175_create_user|tests/20_playwright/api/test_04_crud_methods.py::test_0175_create_user|PASSED|0.126287|
-0176|test_0176_update_user|tests/20_playwright/api/test_04_crud_methods.py::test_0176_update_user|PASSED|0.127629|
-0177|test_0177_remove_user|tests/20_playwright/api/test_04_crud_methods.py::test_0177_remove_user|PASSED|0.151342|
