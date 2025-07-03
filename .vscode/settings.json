@@ -2,7 +2,7 @@
    "editor.tokenColorCustomizations": {
       "comments": "#FFA500"
    },
-   "window.zoomLevel": 1,
+   "window.zoomLevel": 2,
    "editor.fontSize": 18,
    "editor.lineHeight": 25,
    "terminal.integrated.fontSize": 18,
