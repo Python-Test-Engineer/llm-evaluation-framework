@@ -1,0 +1,59 @@
+0211|test_0211_GEN_square|tests/02_py_coffee/00_intro/00_functions/test_functions.py::test_0211_GEN_square|PASSED|0.000107|
+0212|test_0212_GEN_1_cube|tests/02_py_coffee/00_intro/00_functions/test_functions.py::test_0212_GEN_1_cube|PASSED|9e-05|
+0203|test_0203_GEN_square|tests/02_py_coffee/00_intro/01_classes/test_classes.py::TestClass::test_0203_GEN_square|PASSED|8.6e-05|
+0204|test_0204_GEN_cube|tests/02_py_coffee/00_intro/01_classes/test_classes.py::TestClass::test_0204_GEN_cube|PASSED|0.000143|
+0207|test_0207_SKP_square|tests/02_py_coffee/01_marks/00_skip/test_skip_2.py::test_0207_SKP_square|FAILED|0.000171|
+0220|test_0220_XFL_square|tests/02_py_coffee/01_marks/01_xfail/test_xfail_0.py::test_0220_XFL_square|X-FAILED PASSED|0.000369|xfail
+0221|test_0221_XFL_square|tests/02_py_coffee/01_marks/01_xfail/test_xfail_1.py::test_0221_XFL_square|FAILED|9e-05|
+0223|test_0223_XFL_square|tests/02_py_coffee/01_marks/01_xfail/test_xfail_2.py::test_0223_XFL_square|X-FAILED PASSED|0.000205|xfail
+0224|test_0224_XFL_square|tests/02_py_coffee/01_marks/01_xfail/test_xfail_3.py::test_0224_XFL_square|X-FAILED PASSED|0.000289|xfail
+0225|test_0225_XFL_square|tests/02_py_coffee/01_marks/01_xfail/test_xfail_4.py::test_0225_XFL_square|X-FAILED PASSED|0.000281|xfail
+0226|test_0226_XFL_square|tests/02_py_coffee/01_marks/01_xfail/test_xfail_5.py::test_0226_XFL_square|X-FAILED PASSED|0.000148|xfail
+0230|test_0230_PRM_square[1]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_0.py::test_0230_PRM_square[1]|PASSED|7.5e-05|parametrize
+0230|test_0230_PRM_square[2]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_0.py::test_0230_PRM_square[2]|PASSED|0.000102|parametrize
+0230|test_0230_PRM_square[3]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_0.py::test_0230_PRM_square[3]|PASSED|7.5e-05|parametrize
+0230|test_0230_PRM_square[4]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_0.py::test_0230_PRM_square[4]|PASSED|9.6e-05|parametrize
+0230|test_0230_PRM_square[5]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_0.py::test_0230_PRM_square[5]|PASSED|0.00012|parametrize
+0231|test_0231_PRM_square[1-1]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_1.py::test_0231_PRM_square[1-1]|PASSED|8.3e-05|parametrize
+0231|test_0231_PRM_square[2-4]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_1.py::test_0231_PRM_square[2-4]|PASSED|0.000185|parametrize
+0231|test_0231_PRM_square[3-9]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_1.py::test_0231_PRM_square[3-9]|PASSED|8.2e-05|parametrize
+0231|test_0231_PRM_square[4-16]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_1.py::test_0231_PRM_square[4-16]|PASSED|7.3e-05|parametrize
+0231|test_0231_PRM_square[5-25]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_1.py::test_0231_PRM_square[5-25]|PASSED|8.4e-05|parametrize
+0236|test_0236_PRM_pow[4-1]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_2.py::test_0236_PRM_pow[4-1]|PASSED|0.000145|parametrize-parametrize
+0236|test_0236_PRM_pow[4-2]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_2.py::test_0236_PRM_pow[4-2]|PASSED|0.000214|parametrize-parametrize
+0236|test_0236_PRM_pow[4-3]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_2.py::test_0236_PRM_pow[4-3]|PASSED|8.1e-05|parametrize-parametrize
+0236|test_0236_PRM_pow[5-1]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_2.py::test_0236_PRM_pow[5-1]|PASSED|7.8e-05|parametrize-parametrize
+0236|test_0236_PRM_pow[5-2]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_2.py::test_0236_PRM_pow[5-2]|PASSED|7.9e-05|parametrize-parametrize
+0236|test_0236_PRM_pow[5-3]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_2.py::test_0236_PRM_pow[5-3]|PASSED|7.7e-05|parametrize-parametrize
+0236|test_0236_PRM_pow[6-1]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_2.py::test_0236_PRM_pow[6-1]|PASSED|8.9e-05|parametrize-parametrize
+0236|test_0236_PRM_pow[6-2]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_2.py::test_0236_PRM_pow[6-2]|PASSED|9.1e-05|parametrize-parametrize
+0236|test_0236_PRM_pow[6-3]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_2.py::test_0236_PRM_pow[6-3]|PASSED|8.4e-05|parametrize-parametrize
+0237|test_0237_PRM_square[1]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_3.py::test_0237_PRM_square[1]|PASSED|0.000116|parametrize
+0237|test_0237_PRM_square[2]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_3.py::test_0237_PRM_square[2]|PASSED|7.9e-05|parametrize
+0237|test_0237_PRM_square[4]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_3.py::test_0237_PRM_square[4]|PASSED|8.1e-05|parametrize
+0237|test_0237_PRM_square[5]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_3.py::test_0237_PRM_square[5]|PASSED|7.5e-05|parametrize
+0238|test_0238_PRM_square[negative]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_4.py::test_0238_PRM_square[negative]|PASSED|7e-05|parametrize
+0238|test_0238_PRM_square[zero]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_4.py::test_0238_PRM_square[zero]|PASSED|7.9e-05|parametrize
+0238|test_0238_PRM_square[positive]|tests/02_py_coffee/01_marks/02_parametrize/test_parametrize_4.py::test_0238_PRM_square[positive]|PASSED|7.2e-05|parametrize
+0240|test_0240_FXT_square|tests/02_py_coffee/02_fixtures/00_basic_fixtures/test_fixtures_0.py::test_0240_FXT_square|PASSED|0.000113|
+0243|test_0243_FXT_square|tests/02_py_coffee/02_fixtures/00_basic_fixtures/test_fixtures_1.py::test_0243_FXT_square|PASSED|0.00026|
+0244|test_0244_FXT_square|tests/02_py_coffee/02_fixtures/00_basic_fixtures/test_fixtures_2.py::test_0244_FXT_square|PASSED|8.7e-05|
+0245|test_0245_FXT_cube|tests/02_py_coffee/02_fixtures/00_basic_fixtures/test_fixtures_2.py::test_0245_FXT_cube|PASSED|8.5e-05|
+0252|test_0252_CNF_square|tests/02_py_coffee/02_fixtures/01_conftest/test_conftest_0.py::test_0252_CNF_square|PASSED|0.000565|
+0250|test_0250_CNF_square|tests/02_py_coffee/02_fixtures/01_conftest/test_conftest_1/test_conftest_1.py::test_0250_CNF_square|PASSED|8.3e-05|
+0251|test_0251_CNF_square|tests/02_py_coffee/02_fixtures/01_conftest/test_conftest_2/test_conftest_2.py::test_0251_CNF_square|PASSED|0.000554|
+0086|test_0086_sum[1]|tests/02_py_coffee/02_fixtures/02_param_forwarding_NOT_USED/test_param_forwarding_0/test_param_forwarding.py::test_0086_sum[1]|PASSED|0.000121|parametrize
+0086|test_0086_sum[2]|tests/02_py_coffee/02_fixtures/02_param_forwarding_NOT_USED/test_param_forwarding_0/test_param_forwarding.py::test_0086_sum[2]|PASSED|0.0001|parametrize
+0086|test_0086_sum[3]|tests/02_py_coffee/02_fixtures/02_param_forwarding_NOT_USED/test_param_forwarding_0/test_param_forwarding.py::test_0086_sum[3]|PASSED|9.8e-05|parametrize
+0086|test_0086_sum[4]|tests/02_py_coffee/02_fixtures/02_param_forwarding_NOT_USED/test_param_forwarding_0/test_param_forwarding.py::test_0086_sum[4]|PASSED|0.000198|parametrize
+0086|test_0086_sum[5]|tests/02_py_coffee/02_fixtures/02_param_forwarding_NOT_USED/test_param_forwarding_0/test_param_forwarding.py::test_0086_sum[5]|PASSED|0.000119|parametrize
+0087|test_0087_square|tests/02_py_coffee/02_fixtures/03_yield_fixture/test_yield_fixtures.py::test_0087_square|PASSED|0.000738|
+0088|test_0088_um[1]|tests/02_py_coffee/02_fixtures/indirect_params/test_indirect_params.py::test_0088_um[1]|PASSED|9.5e-05|parametrize
+0088|test_0088_um[2]|tests/02_py_coffee/02_fixtures/indirect_params/test_indirect_params.py::test_0088_um[2]|PASSED|8.1e-05|parametrize
+0088|test_0088_um[3]|tests/02_py_coffee/02_fixtures/indirect_params/test_indirect_params.py::test_0088_um[3]|PASSED|0.000193|parametrize
+0088|test_0088_um[4]|tests/02_py_coffee/02_fixtures/indirect_params/test_indirect_params.py::test_0088_um[4]|PASSED|0.000157|parametrize
+0088|test_0088_um[5]|tests/02_py_coffee/02_fixtures/indirect_params/test_indirect_params.py::test_0088_um[5]|PASSED|7.4e-05|parametrize
+0260|test_0260_CHE_square|tests/02_py_coffee/04_caches/00_basic_caches/test_caches.py::test_0260_CHE_square|PASSED|0.000102|
+0270|test_0270_PLG_sleep[0]|tests/02_py_coffee/05_plugins/00_xdist/test_parallel.py::test_0270_PLG_sleep[0]|PASSED|1.000456|parametrize
+0270|test_0270_PLG_sleep[1]|tests/02_py_coffee/05_plugins/00_xdist/test_parallel.py::test_0270_PLG_sleep[1]|PASSED|1.000496|parametrize
+0270|test_0270_PLG_sleep[2]|tests/02_py_coffee/05_plugins/00_xdist/test_parallel.py::test_0270_PLG_sleep[2]|PASSED|1.001064|parametrize
