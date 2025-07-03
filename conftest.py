@@ -4,8 +4,7 @@ import pytest
 from langchain_openai import ChatOpenAI
 from ragas.llms import LangchainLLMWrapper
 
-os.environ[
-    "OPENAI_API_KEY"] = "sk-proj-G5-ysceXJFhT1TdeXmBqyvDQugiQTg6taa91lnRNWahjEcL3XT3BlbkFJhJE_y3YTLuYwFQR3qIcl1qsvtv7AQQ4mDmaeHeZoNe795dezsUfbOxPDn-vkCtW1qUNvU8GVkA"
+
 
 
 @pytest.fixture
