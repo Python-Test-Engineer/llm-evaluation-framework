@@ -1,12 +1,12 @@
 [project]
 name = "llm-evaluation-framework"
 version = "0.1.0"
-description = "AN integration of Pytest Full Stack, Evidently and AI Agents"
+description = "An integration of Pytest Full Stack, Evidently and AI Agents"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "chromadb>=1.0.15",
-    "deepeval>=2.5.5",
+
     "evidently[llm]>=0.7.9",
     "ipykernel>=6.29.5",
     "langchain>=0.3.26",
