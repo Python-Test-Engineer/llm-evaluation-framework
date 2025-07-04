@@ -1,5 +1,5 @@
 import pytest
-from src.openai_agent_basic import SimpleAgent
+from src.openai_agent_logging import SimpleAgent
 
 
 class TestSimpleAgent:

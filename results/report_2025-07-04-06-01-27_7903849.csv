@@ -1,8 +1,0 @@
-process|test_process_alpha_data|tests/100_agentic/test_openai_agent.py::TestSimpleAgent::test_process_alpha_data|PASSED|1.571789|
-handle|test_handle_beta_information|tests/100_agentic/test_openai_agent.py::TestSimpleAgent::test_handle_beta_information|PASSED|1.769728|
-work|test_work_with_gamma_values|tests/100_agentic/test_openai_agent.py::TestSimpleAgent::test_work_with_gamma_values|PASSED|1.694427|
-random|test_random_input|tests/100_agentic/test_openai_agent.py::TestSimpleAgent::test_random_input|PASSED|1.793936|
-process|test_process_alpha_data|tests/100_agentic/test_openai_agent_adv.py::TestSimpleAgent::test_process_alpha_data|FAILED|1.362174|
-handle|test_handle_beta_information|tests/100_agentic/test_openai_agent_adv.py::TestSimpleAgent::test_handle_beta_information|FAILED|1.218655|
-work|test_work_with_gamma_values|tests/100_agentic/test_openai_agent_adv.py::TestSimpleAgent::test_work_with_gamma_values|FAILED|1.194434|
-random|test_random_input|tests/100_agentic/test_openai_agent_adv.py::TestSimpleAgent::test_random_input|FAILED|1.717134|
