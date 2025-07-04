@@ -1,0 +1,12 @@
+process|test_process_alpha_data|tests/100_agentic/test_openai_agent.py::TestSimpleAgent::test_process_alpha_data|PASSED|2.056975|
+handle|test_handle_beta_information|tests/100_agentic/test_openai_agent.py::TestSimpleAgent::test_handle_beta_information|PASSED|1.601698|
+work|test_work_with_gamma_values|tests/100_agentic/test_openai_agent.py::TestSimpleAgent::test_work_with_gamma_values|PASSED|1.267596|
+random|test_random_input|tests/100_agentic/test_openai_agent.py::TestSimpleAgent::test_random_input|FAILED|2.740875|
+agent|test_agent_routing[Process this alpha data-Tool A processed: Process this alpha data]|tests/100_agentic/test_openai_agent.py::test_agent_routing[Process this alpha data-Tool A processed: Process this alpha data]|PASSED|2.039916|parametrize
+agent|test_agent_routing[Handle beta information-Tool B processed: Handle beta information]|tests/100_agentic/test_openai_agent.py::test_agent_routing[Handle beta information-Tool B processed: Handle beta information]|PASSED|1.518028|parametrize
+agent|test_agent_routing[Work with gamma values-Tool C processed: Work with gamma values]|tests/100_agentic/test_openai_agent.py::test_agent_routing[Work with gamma values-Tool C processed: Work with gamma values]|PASSED|2.073585|parametrize
+agent|test_agent_routing[Random input-Tool A processed: Random input]|tests/100_agentic/test_openai_agent.py::test_agent_routing[Random input-Tool A processed: Random input]|FAILED|3.889875|parametrize
+alpha|test_alpha_case|tests/100_agentic/test_openai_agent.py::test_alpha_case|PASSED|1.979513|
+beta|test_beta_case|tests/100_agentic/test_openai_agent.py::test_beta_case|PASSED|1.942218|
+gamma|test_gamma_case|tests/100_agentic/test_openai_agent.py::test_gamma_case|PASSED|1.637673|
+random|test_random_case|tests/100_agentic/test_openai_agent.py::test_random_case|PASSED|1.744334|
