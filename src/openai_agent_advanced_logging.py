@@ -3,35 +3,42 @@ import json
 from openai import OpenAI
 
 
-# Logging decorator
-def log_tool_usage(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        print(f"Tool '{func.__name__}' called with args: {args}, kwargs: {kwargs} ")
-        result = func(*args, **kwargs)
-        print(f"Tool '{func.__name__}' returned: {result}")
-        print(
-            f"Tool '{func.__name__}' called with args: {args}, kwargs: {kwargs} returned: {result}"
-        )
-        return result
+# Updated logging decorator with enable/disable argument
+def log_tool_usage(enable_logging=False):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            if enable_logging:
+                print(
+                    f"Tool '{func.__name__}' called with args: {args}, kwargs: {kwargs}"
+                )
+            result = func(*args, **kwargs)
+            if enable_logging:
+                print(f"Tool '{func.__name__}' returned: {result}")
+                print(
+                    f"Tool '{func.__name__}' called with args: {args}, kwargs: {kwargs} returned: {result}"
+                )
+            return result
 
-    return wrapper
+        return wrapper
+
+    return decorator
 
 
-# Define the three tools
-@log_tool_usage
+# Define the three tools with logging enabled
+@log_tool_usage()
 def tool_a(data: str) -> str:
     """Tool A: Processes data with method A"""
     return f"Tool A processed: {data}"
 
 
-@log_tool_usage
+@log_tool_usage()
 def tool_b(data: str) -> str:
     """Tool B: Processes data with method B"""
     return f"Tool B processed: {data}"
 
 
-@log_tool_usage
+@log_tool_usage()
 def tool_c(data: str) -> str:
     """Tool C: Processes data with method C"""
     return f"Tool C processed: {data}"
@@ -39,7 +46,8 @@ def tool_c(data: str) -> str:
 
 # Simple Agent class
 class SimpleAgent:
-    def __init__(self, model="gpt-4"):
+
+    def __init__(self, model="gpt-4o-mini"):
         self.client = OpenAI()
         self.model = model
         self.tools = {"tool_a": tool_a, "tool_b": tool_b, "tool_c": tool_c}
