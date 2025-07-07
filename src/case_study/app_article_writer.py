@@ -70,9 +70,6 @@ def evaluate_article(state: AgentState) -> AgentState:
     return state
 
 
-# print(result)
-
-
 def translate_article(state: AgentState) -> AgentState:
     # print(f"translate_article: Current state: {state}")
 
