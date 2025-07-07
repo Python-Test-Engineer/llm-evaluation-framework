@@ -63,17 +63,23 @@ class ResearchCoordinator:
             # Display the results
             console.print(Panel("[bold cyan]Query Analysis[/bold cyan]"))
             console.print(f"[yellow]Thoughts:[/yellow] {result.final_output.thoughts}")
-            report_plan_name = "report_plan_" + self.query.replace(" ", "_").lower()
+            query_plan_name = (
+                "01_generated_search_queries_" + self.query.replace(" ", "_").lower()
+            )
             console.print("\n[yellow]Generated Search Queries:[/yellow]")
+            # =================================================
+
             # EVALS
             for i, query in enumerate(result.final_output.queries, 1):
                 console.print(f"  {i}. {query}")
             with open(
-                f"./src/deep_research/outputs/{report_plan_name}.md",
+                f"./src/deep_research/outputs/{query_plan_name}.md",
                 "w",
                 encoding="utf-8",
             ) as file:
                 file.write("\n".join(result.final_output.queries))
+            # =================================================
+
             return result.final_output
 
     def duckduckgo_search(self, query: str):
@@ -111,12 +117,16 @@ class ResearchCoordinator:
                 query = query.replace(" ", "_").lower()
                 # strip all non-alphanumeric characters from query
                 query_title = re.sub(r"\W+", "", query)
-                with open(
-                    f"./src/deep_research/outputs/search_results_{query_title}.csv",
-                    "a",
-                    encoding="utf-8",
-                ) as file:
-                    file.write(f"{result['title']}|{result['href']}\n")
+                try:
+                    with open(
+                        f"./src/deep_research/outputs/01_search_queries_{query_title}.md",
+                        "a",
+                        encoding="utf-8",
+                    ) as file:
+                        file.write(f"{query}\n")
+                except Exception as ex:
+                    console.print(f"[bold red]Error:[/bold red] {str(ex)}")
+
                 # =================================================
                 analysis_time = time.time() - start_analysis_time
 
@@ -180,11 +190,11 @@ class ResearchCoordinator:
                     # =================================================
 
                     # EVALS
-                    query_plan_name = (
+                    follow_up_name = (
                         "follow_up_queries_" + self.query.replace(" ", "_").lower()
                     )
                     with open(
-                        f"./src/deep_research/outputs/{query_plan_name}_{rnd}.md",
+                        f"./src/deep_research/outputs/{follow_up_name}_{rnd}.md",
                         "a",
                         encoding="utf-8",
                     ) as file:

@@ -34,15 +34,13 @@ def url_scrape(url: str) -> str:
         return f"Failed to scrape content from {url}: {str(e)}"
 
 
-SEARCH_AGENT_PROMPT = (
-    "You are a research assistant. Given a URL and its title, you will analyze the content of the URL "
-    "ONLY use English language content and English Alphabet characters. "
-    "and produce a concise summary of the information. The summary must be 2 paragraphs."
-    "Capture the main points. Write succinctly, no need to have complete sentences or perfect "
-    "grammar. This will be consumed by someone synthesizing a report, so it's vital you capture the "
-    "essence and ignore any fluff. Do not include any additional commentary other than the summary "
-    "itself."
-)
+SEARCH_AGENT_PROMPT = """
+    You are a research assistant. Given a URL and its title, you will analyze the content of the URL.
+    ONLY use English language content and English Alphabet characters. 
+    Produce a concise summary of the information. The summary must be 2 paragraphs.
+    Capture the main points.
+    Write succinctly, no need to have complete sentences or perfect grammar. This will be consumed by someone synthesizing a report, so it's vital you capture the essence and ignore any fluff. Do not include any additional commentary other than the summary itself."""
+
 
 search_agent = Agent(
     name="Search Agent",

@@ -10,7 +10,7 @@ For each query, follow these steps:
    - Consider potential challenges and how you'll address them
    - Explain your strategy for finding comprehensive information
 
-2. Then generate 2 ONLY search queries that:
+2. Then generate ONLY 1 search queries that:
    - Are specific and focused on retrieving high-quality information
    - Cover different aspects of the topic
    - Will help find relevant and diverse information
