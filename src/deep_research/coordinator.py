@@ -50,14 +50,6 @@ class ResearchCoordinator:
 
             console.print("\n[bold green]✓ Research complete![/bold green]\n")
             console.print(Markdown(final_report))
-            # EVALS
-            # rnd = randint(1000, 9999)
-            # with open(
-            #     f"./src/deep_research/outputs/report_{self.query}_{rnd}.md",
-            #     "w",
-            #     encoding="utf-8",
-            # ) as file:
-            #     file.write(final_report)
 
             return final_report
 
@@ -107,6 +99,14 @@ class ResearchCoordinator:
                 start_analysis_time = time.time()
                 search_input = f"Title: {result['title']}\nURL: {result['href']}"
                 agent_result = await Runner.run(search_agent, input=search_input)
+                # EVALS
+                with open(
+                    f"./src/deep_research/outputs/search_results_{query}.csv",
+                    "a",
+                    encoding="utf-8",
+                ) as file:
+                    file.write(f"{result['title']}|{result['href']}\n")
+
                 analysis_time = time.time() - start_analysis_time
 
                 search_result = SearchResult(
@@ -160,9 +160,20 @@ class ResearchCoordinator:
                 f"[yellow]Reasoning:[/yellow] {result.final_output.reasoning}"
             )
 
+            rnd = randint(1000, 9999)
+
             if result.final_output.should_follow_up:
                 console.print("\n[yellow]Follow-up Queries:[/yellow]")
                 for i, query in enumerate(result.final_output.queries, 1):
                     console.print(f"  {i}. {query}")
+                    # EVALS
+                    queyry_plan_name = (
+                        "follow_up_queries_" + self.query.replace(" ", "_").lower())
+                    with open(
+                        f"./src/deep_research/outputs/follow_up_queries_{self.query}_{rnd}.md",
+                        "a",
+                        encoding="utf-8",
+                    ) as file:
+                        file.write("\n".join(result.final_output.queries))
 
             return result.final_output
