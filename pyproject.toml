@@ -5,7 +5,9 @@ description = "An integration of Pytest Full Stack, Evidently and AI Agents"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "bs4>=0.0.2",
     "chromadb>=1.0.15",
+    "ddgs>=9.0.0",
     "evidently[llm]>=0.7.9",
     "gradio>=5.35.0",
     "ipykernel>=6.29.5",
