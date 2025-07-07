@@ -13,9 +13,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import StateGraph, END
 from typing import TypedDict, Literal
 
-from IPython.display import Image, display
 from pydantic import BaseModel, Field
-
 
 import warnings
 
@@ -200,11 +198,8 @@ workflow.add_edge("publisher", END)
 
 app = workflow.compile()
 
+# Run examples...
 
-# try:
-#     display(Image(app.get_graph(xray=True).draw_mermaid_png()))
-# except Exception:
-#     pass
 print("\n======================================")
 print("FIRST EXAMPLE...\n")
 initial_state = {"article_state": "The Pope will visit Spain today"}
