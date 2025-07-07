@@ -138,35 +138,33 @@ def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
     article = state["article_state"]
     evaluator = grade_prompt | structured_llm_grader
     result = evaluator.invoke({"article": article})
-    # print(f"evaluator_router: Current state: {state}")
-    # print("Evaluator result: ", result)
+
     if result.binary_score == "yes":
         return "editor"
     else:
         return "not_relevant"
 
 
-TEMPERATURE = 0.5
-MODEL = "gpt-4o-mini"
-llm_postability = ChatOpenAI(model=MODEL, temperature=TEMPERATURE)
-structured_llm_postability_grader = llm_postability.with_structured_output(
-    ArticlePostabilityGrader
-)
-
-postability_system = """You are a grader assessing whether a news article is ready to be posted, if it meets the minimum word count of 50 words, is not written in a sensationalistic style, and if it is in German. \n
-    Evaluate the article for grammatical errors, completeness, appropriateness for publication, and EXAGERATED sensationalism. \n
-    Also, confirm if the language used in the article is German and it meets the word count requirement. \n
-    Provide four binary scores: one to indicate if the article can be posted ('yes' or 'no'), one for adequate word count ('yes' or 'no'), one for sensationalistic writing ('yes' or 'no'), and another if the language is German ('yes' or 'no')."""
-postability_grade_prompt = ChatPromptTemplate.from_messages(
-    [("system", postability_system), ("human", "News Article:\n\n {article}")]
-)
-
-editor = postability_grade_prompt | structured_llm_postability_grader
-
-
 def editor_router(
     state: AgentState,
 ) -> Literal["translator", "publisher", "expander"]:
+    TEMPERATURE = 0.5
+    MODEL = "gpt-4o-mini"
+    llm_postability = ChatOpenAI(model=MODEL, temperature=TEMPERATURE)
+    structured_llm_postability_grader = llm_postability.with_structured_output(
+        ArticlePostabilityGrader
+    )
+
+    postability_system = """You are a grader assessing whether a news article is ready to be posted, if it meets the minimum word count of 50 words, is not written in a sensationalistic style, and if it is in German. \n
+        Evaluate the article for grammatical errors, completeness, appropriateness for publication, and EXAGERATED sensationalism. \n
+        Also, confirm if the language used in the article is German and it meets the word count requirement. \n
+        Provide four binary scores: one to indicate if the article can be posted ('yes' or 'no'), one for adequate word count ('yes' or 'no'), one for sensationalistic writing ('yes' or 'no'), and another if the language is German ('yes' or 'no')."""
+    postability_grade_prompt = ChatPromptTemplate.from_messages(
+        [("system", postability_system), ("human", "News Article:\n\n {article}")]
+    )
+
+    editor = postability_grade_prompt | structured_llm_postability_grader
+
     article = state["article_state"]
     result = editor.invoke({"article": article})
     # print(f"news_chef_router: Current state: {state}")
