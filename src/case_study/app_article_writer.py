@@ -119,23 +119,22 @@ def publisher(state: AgentState) -> AgentState:
     return state
 
 
-MODEL = "gpt-4o-mini"
-TEMPERATURE = 0
-
-llm = ChatOpenAI(model=MODEL, temperature=TEMPERATURE)
-structured_llm_grader = llm.with_structured_output(TransferNewsGrader)
-
-system = """You are a grader assessing whether a news article concerns a football transfer. \n
-    Check if the article explicitly mentions player transfers between clubs, potential transfers, or confirmed transfers. \n
-    Provide a binary score 'yes' or 'no' to indicate whether the news is about a football transfer."""
-grade_prompt = ChatPromptTemplate.from_messages(
-    [("system", system), ("human", "News Article:\n\n {article}")]
-)
-should_write = grade_prompt | structured_llm_grader
-
-
 def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
     article = state["article_state"]
+
+    MODEL = "gpt-4o-mini"
+    TEMPERATURE = 0
+
+    llm = ChatOpenAI(model=MODEL, temperature=TEMPERATURE)
+    structured_llm_grader = llm.with_structured_output(TransferNewsGrader)
+
+    system = """You are a grader assessing whether a news article concerns a football transfer. \n
+        Check if the article explicitly mentions player transfers between clubs, potential transfers, or confirmed transfers. \n
+        Provide a binary score 'yes' or 'no' to indicate whether the news is about a football transfer."""
+    grade_prompt = ChatPromptTemplate.from_messages(
+        [("system", system), ("human", "News Article:\n\n {article}")]
+    )
+    # should_write = grade_prompt | structured_llm_grader
     evaluator = grade_prompt | structured_llm_grader
     result = evaluator.invoke({"article": article})
 
