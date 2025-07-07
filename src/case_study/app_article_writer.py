@@ -84,7 +84,7 @@ result = translator.invoke(
         "article": "It has been reported that Messi will transfer from Real Madrid to FC Barcelona."
     }
 )
-print(result)
+# print(result)
 
 
 def translate_article(state: AgentState) -> AgentState:
@@ -203,18 +203,20 @@ workflow.add_edge("publisher", END)
 app = workflow.compile()
 
 
-try:
-    display(Image(app.get_graph(xray=True).draw_mermaid_png()))
-except Exception:
-    pass
-
-print("NOT relevant article")
+# try:
+#     display(Image(app.get_graph(xray=True).draw_mermaid_png()))
+# except Exception:
+#     pass
+print("\n======================================")
+print("FIRST EXAMPLE...\n")
 initial_state = {"article_state": "The Pope will visit Spain today"}
 result = app.invoke(initial_state)
+print("NOT relevant article example")
 print("Final result:", result)
+
 print("\n======================================")
-print("Article is RELEVANT and needs to be written")
+print("SECOND EXAMPLE...\n")
 initial_state = {"article_state": "Messi gonna switch from barca to real madrid"}
 result = app.invoke(initial_state)
-
-print("Final result:", result)
+print("Article is RELEVANT and needs to be written\n")
+print("Final article:\n\n", result["article_state"])
