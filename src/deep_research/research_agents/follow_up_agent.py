@@ -13,7 +13,7 @@ FOLLOW_UP_DECISION_PROMPT = (
     "If you think we have enough information, return should_follow_up=False. If you think we need to generate follow-up queries, return should_follow_up=True. "
     "If you return True, you will also need to generate 2-3 follow-up queries that address specific gaps in the current findings. "
     "Always provide detailed reasoning for your decision."
-    "NEVER exceed 2 follow up queries, and ensure they are specific and actionable. "
+    "NEVER exceed 1 follow up queries, and ensure they are specific and actionable. "
 )
 
 

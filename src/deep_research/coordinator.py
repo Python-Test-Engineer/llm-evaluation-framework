@@ -1,4 +1,5 @@
 import time
+from random import randint
 from agents import Runner, trace
 from ddgs import DDGS
 from rich.console import Console
@@ -49,6 +50,14 @@ class ResearchCoordinator:
 
             console.print("\n[bold green]✓ Research complete![/bold green]\n")
             console.print(Markdown(final_report))
+            # EVALS
+            # rnd = randint(1000, 9999)
+            # with open(
+            #     f"./src/deep_research/outputs/report_{self.query}_{rnd}.md",
+            #     "w",
+            #     encoding="utf-8",
+            # ) as file:
+            #     file.write(final_report)
 
             return final_report
 
@@ -59,7 +68,7 @@ class ResearchCoordinator:
             result = await Runner.run(query_agent, input=self.query)
 
             # Display the results
-            console.print(Panel(f"[bold cyan]Query Analysis[/bold cyan]"))
+            console.print(Panel("[bold cyan]Query Analysis[/bold cyan]"))
             console.print(f"[yellow]Thoughts:[/yellow] {result.final_output.thoughts}")
             report_plan_name = "report_plan_" + self.query.replace(" ", "_").lower()
             console.print("\n[yellow]Generated Search Queries:[/yellow]")
@@ -93,7 +102,7 @@ class ResearchCoordinator:
             for result in all_search_results[query]:
                 console.print(f"  [green]Result:[/green] {result['title']}")
                 console.print(f"  [dim]URL:[/dim] {result['href']}")
-                console.print(f"  [cyan]Analyzing content...[/cyan]")
+                console.print("   [cyan]Analyzing content...[/cyan]")
 
                 start_analysis_time = time.time()
                 search_input = f"Title: {result['title']}\nURL: {result['href']}"
@@ -143,7 +152,7 @@ class ResearchCoordinator:
 
             result = await Runner.run(follow_up_decision_agent, input=findings_text)
 
-            console.print(Panel(f"[bold cyan]Follow-up Decision[/bold cyan]"))
+            console.print(Panel("[bold cyan]Follow-up Decision[/bold cyan]"))
             console.print(
                 f"[yellow]Decision:[/yellow] {'More research needed' if result.final_output.should_follow_up else 'Research complete'}"
             )

@@ -10,7 +10,7 @@ For each query, follow these steps:
    - Consider potential challenges and how you'll address them
    - Explain your strategy for finding comprehensive information
 
-2. Then generate 3 search queries that:
+2. Then generate 2 ONLY search queries that:
    - Are specific and focused on retrieving high-quality information
    - Cover different aspects of the topic
    - Will help find relevant and diverse information
@@ -18,13 +18,15 @@ For each query, follow these steps:
 Always provide both your thinking process and the generated queries.
 """
 
+
 class QueryResponse(BaseModel):
     queries: list[str]
     thoughts: str
+
 
 query_agent = Agent(
     name="Query Generator Agent",
     instructions=QUERY_AGENT_PROMPT,
     output_type=QueryResponse,
-    model="gpt-4o-mini"
+    model="gpt-4o-mini",
 )

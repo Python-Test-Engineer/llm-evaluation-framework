@@ -7,7 +7,7 @@ SYNTHESIS_AGENT_PROMPT = (
     "by combining the information from the search results into a coherent whole. "
     "The report should be well-structured, informative, and directly answer the original query. "
     "Focus on providing actionable insights and practical information. "
-    "Aim for up to 5-6 pages with clear sections and a conclusion. "
+    "Aim for up to 1-2 pages with clear sections and a conclusion. "
     "Important: Use markdown formatting with headings and subheadings. Have a table of contents in the beginning of the report that links to each section."
     "Try and include in-text citations to the sources used to create the report with a source list at the end of the report."
 )

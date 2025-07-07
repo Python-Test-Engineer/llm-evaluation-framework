@@ -1,5 +1,6 @@
 """Based on Kody Simpson Deep Research https://www.youtube.com/watch?v=gFcAfU3V1Zo&t=6182s"""
 
+from random import randint
 import asyncio
 from dotenv import load_dotenv, find_dotenv
 from rich.console import Console
@@ -31,7 +32,11 @@ async def main() -> None:
             "\n[bold green]Research Report Generated Successfully![/bold green]"
         )
         console.print(report)
-        with open(f"./{report_name}", "w", encoding="utf-8") as file:
+        # EVALS
+        rnd = randint(1000, 9999)
+        with open(
+            f"./src/deep_research/outputs/{report_name}_{rnd}.md", "w", encoding="utf-8"
+        ) as file:
             file.write(report)
     else:
         console.print(
