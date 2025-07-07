@@ -1,4 +1,5 @@
 import time
+import re
 from random import randint
 from agents import Runner, trace
 from ddgs import DDGS
@@ -64,9 +65,14 @@ class ResearchCoordinator:
             console.print(f"[yellow]Thoughts:[/yellow] {result.final_output.thoughts}")
             report_plan_name = "report_plan_" + self.query.replace(" ", "_").lower()
             console.print("\n[yellow]Generated Search Queries:[/yellow]")
+            # EVALS
             for i, query in enumerate(result.final_output.queries, 1):
                 console.print(f"  {i}. {query}")
-            with open(f"./{report_plan_name}", "w", encoding="utf-8") as file:
+            with open(
+                f"./src/deep_research/outputs/{report_plan_name}.md",
+                "w",
+                encoding="utf-8",
+            ) as file:
                 file.write("\n".join(result.final_output.queries))
             return result.final_output
 
@@ -99,14 +105,19 @@ class ResearchCoordinator:
                 start_analysis_time = time.time()
                 search_input = f"Title: {result['title']}\nURL: {result['href']}"
                 agent_result = await Runner.run(search_agent, input=search_input)
+                # =================================================
+
                 # EVALS
+                query = query.replace(" ", "_").lower()
+                # strip all non-alphanumeric characters from query
+                query_title = re.sub(r"\W+", "", query)
                 with open(
-                    f"./src/deep_research/outputs/search_results_{query}.csv",
+                    f"./src/deep_research/outputs/search_results_{query_title}.csv",
                     "a",
                     encoding="utf-8",
                 ) as file:
                     file.write(f"{result['title']}|{result['href']}\n")
-
+                # =================================================
                 analysis_time = time.time() - start_analysis_time
 
                 search_result = SearchResult(
@@ -166,14 +177,18 @@ class ResearchCoordinator:
                 console.print("\n[yellow]Follow-up Queries:[/yellow]")
                 for i, query in enumerate(result.final_output.queries, 1):
                     console.print(f"  {i}. {query}")
+                    # =================================================
+
                     # EVALS
-                    queyry_plan_name = (
-                        "follow_up_queries_" + self.query.replace(" ", "_").lower())
+                    query_plan_name = (
+                        "follow_up_queries_" + self.query.replace(" ", "_").lower()
+                    )
                     with open(
-                        f"./src/deep_research/outputs/follow_up_queries_{self.query}_{rnd}.md",
+                        f"./src/deep_research/outputs/{query_plan_name}_{rnd}.md",
                         "a",
                         encoding="utf-8",
                     ) as file:
                         file.write("\n".join(result.final_output.queries))
+                    # =================================================
 
             return result.final_output
