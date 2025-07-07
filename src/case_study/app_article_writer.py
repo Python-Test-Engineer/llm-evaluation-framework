@@ -70,41 +70,45 @@ def evaluate_article(state: AgentState) -> AgentState:
     return state
 
 
-llm_translation = ChatOpenAI(model="gpt-4o-mini", temperature=0)
-
-translation_system = """You are a translator converting articles into German. Translate the text accurately while maintaining the original tone and style."""
-translation_prompt = ChatPromptTemplate.from_messages(
-    [("system", translation_system), ("human", "Article to translate:\n\n {article}")]
-)
-
-translator = translation_prompt | llm_translation
-
-result = translator.invoke(
-    {
-        "article": "It has been reported that Messi will transfer from Real Madrid to FC Barcelona."
-    }
-)
 # print(result)
 
 
 def translate_article(state: AgentState) -> AgentState:
     # print(f"translate_article: Current state: {state}")
+
+    llm_translation = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+
+    translation_system = """You are a translator converting articles into German. Translate the text accurately while maintaining the original tone and style."""
+    translation_prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", translation_system),
+            ("human", "Article to translate:\n\n {article}"),
+        ]
+    )
+
+    translator = translation_prompt | llm_translation
+
+    result = translator.invoke(
+        {
+            "article": "It has been reported that Messi will transfer from Real Madrid to FC Barcelona."
+        }
+    )
     article = state["article_state"]
     result = translator.invoke({"article": article})
     state["article_state"] = result.content
     return state
 
 
-llm_expansion = ChatOpenAI(model="gpt-4o-mini", temperature=0.5)
-expansion_system = """You are a writer tasked with expanding the given article to at least 200 words while maintaining relevance, coherence, and the original tone."""
-expansion_prompt = ChatPromptTemplate.from_messages(
-    [("system", expansion_system), ("human", "Original article:\n\n {article}")]
-)
-
-expander = expansion_prompt | llm_expansion
-
-
 def expand_article(state: AgentState) -> AgentState:
+
+    llm_expansion = ChatOpenAI(model="gpt-4o-mini", temperature=0.5)
+    expansion_system = """You are a writer tasked with expanding the given article to at least 200 words while maintaining relevance, coherence, and the original tone."""
+    expansion_prompt = ChatPromptTemplate.from_messages(
+        [("system", expansion_system), ("human", "Original article:\n\n {article}")]
+    )
+
+    expander = expansion_prompt | llm_expansion
+
     # print(f"expand_article: Current state: {state}")
     article = state["article_state"]
     result = expander.invoke({"article": article})
@@ -163,7 +167,7 @@ postability_grade_prompt = ChatPromptTemplate.from_messages(
 editor = postability_grade_prompt | structured_llm_postability_grader
 
 
-def news_chef_router(
+def editor_router(
     state: AgentState,
 ) -> Literal["translator", "publisher", "expander"]:
     article = state["article_state"]
@@ -193,7 +197,7 @@ workflow.add_conditional_edges(
 )
 workflow.add_conditional_edges(
     "editor",
-    news_chef_router,
+    editor_router,
     {"translator": "translator", "publisher": "publisher", "expander": "expander"},
 )
 workflow.add_edge("translator", "editor")
