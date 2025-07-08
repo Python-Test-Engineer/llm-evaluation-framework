@@ -42,28 +42,14 @@ def check_seating_availability(location: str, seating_type: str):
 
 
 tools = [get_weather, check_seating_availability]
-
-
 llm_with_tools = llm.bind_tools(tools)
 tools_called = ""
-
 result = llm_with_tools.invoke("How will the weather be in munich today?")
-
-console.print("Tool name: ", result.tool_calls[0]["name"])
-
-console.print("Tool args: ", result.tool_calls[0]["args"])
-
-
 result = llm_with_tools.invoke(
     "How will the weather be in munich today? Do you still have seats outdoor available?"
 )
-result
-
-
-result.tool_calls
 
 tools_called = result.tool_calls
-
 messages = [
     HumanMessage(
         "How will the weather be in munich today? Do you still have seats outdoor available?"
@@ -72,18 +58,12 @@ messages = [
 llm_output = llm_with_tools.invoke(messages)
 messages.append(llm_output)
 
-
-messages
-
-
 tool_mapping = {
     "get_weather": get_weather,
     "check_seating_availability": check_seating_availability,
 }
 
-
 llm_output.tool_calls
-
 
 for tool_call in llm_output.tool_calls:
     tool = tool_mapping[tool_call["name"].lower()]
@@ -91,12 +71,10 @@ for tool_call in llm_output.tool_calls:
     messages.append(ToolMessage(tool_output, tool_call_id=tool_call["id"]))
 
 
-messages
-
-
-llm_with_tools.invoke(messages)
 INPUT = ""
 OUTPUT = ""
+
+llm_with_tools.invoke(messages)
 for message in messages:
     if isinstance(message, ToolMessage) or isinstance(message, HumanMessage):
         console.print(f"Message Type: {message.type}")
@@ -108,13 +86,8 @@ for message in messages:
 
 
 #################### EVALS01 ####################
-#
-# This can be standardised during development
-# DATE|COMPONENT_CODE|MODEL|TEMPERATURE|INPUT|OUTPUT and any optional fields
-#
-
 log = f"{get_time_now()}|TOOL_CALLING|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|{tools_called}|\n"
 console.print(log)
-
 with open("./src/case_study/05_tool_calling.csv", "a") as f:
     f.write(f"{log}\n")
+#################################################
