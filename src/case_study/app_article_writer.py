@@ -225,7 +225,7 @@ def editor_router(
         "./src/case_study/04_article_writer_publishable.csv", "a", encoding="utf-8"
     ) as f:
         f.write(
-            f"{get_report_date()}|ARTICLE_WRITER|PUBLISHER|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|\n"
+            f"{get_report_date()}|ARTICLE_WRITER|PUBLISHER|{MODEL}|{TEMPERATURE}|{INPUT[:75]}...|{OUTPUT}|\n"
         )
     ##############################################
     if result.can_be_posted == "yes":
