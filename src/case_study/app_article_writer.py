@@ -19,6 +19,9 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
+MODEL = "gpt-4o-mini"
+TEMPERATURE = 0
+
 
 def get_report_date():
     """
@@ -68,49 +71,6 @@ def evaluate_article(state: AgentState) -> AgentState:
     return state
 
 
-def translate_article(state: AgentState) -> AgentState:
-    # print(f"translate_article: Current state: {state}")
-
-    llm_translation = ChatOpenAI(model="gpt-4o-mini", temperature=0)
-
-    translation_system = """You are a translator converting articles into German. Translate the text accurately while maintaining the original tone and style."""
-    translation_prompt = ChatPromptTemplate.from_messages(
-        [
-            ("system", translation_system),
-            ("human", "Article to translate:\n\n {article}"),
-        ]
-    )
-
-    translator = translation_prompt | llm_translation
-
-    result = translator.invoke(
-        {
-            "article": "It has been reported that Messi will transfer from Real Madrid to FC Barcelona."
-        }
-    )
-    article = state["article_state"]
-    result = translator.invoke({"article": article})
-    state["article_state"] = result.content
-    return state
-
-
-def expand_article(state: AgentState) -> AgentState:
-
-    llm_expansion = ChatOpenAI(model="gpt-4o-mini", temperature=0.5)
-    expansion_system = """You are a writer tasked with expanding the given article to at least 200 words while maintaining relevance, coherence, and the original tone."""
-    expansion_prompt = ChatPromptTemplate.from_messages(
-        [("system", expansion_system), ("human", "Original article:\n\n {article}")]
-    )
-
-    expander = expansion_prompt | llm_expansion
-
-    # print(f"expand_article: Current state: {state}")
-    article = state["article_state"]
-    result = expander.invoke({"article": article})
-    state["article_state"] = result.content
-    return state
-
-
 def publisher(state: AgentState) -> AgentState:
     # print(f"publisher: Current state: {state}")
     # print("FINAL_STATE in publisher:", state)
@@ -138,16 +98,16 @@ def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
     result = evaluator.invoke({"article": article})
     OUTPUT = result.binary_score
     print(f"evaluator_router: OUTPUT: {OUTPUT}")
-    #################### EVALS ####################
+    #################### EVALS01 ####################
     #
     # This can be standardised during development
     # DATE|COMPONENT_CODE|MODEL|TEMPERATURE|INPUT|OUTPUT and any optional fields
     #
     with open(
-        "./src/case_study/article_writer_should_write.csv", "a", encoding="utf-8"
+        "./src/case_study/01_article_writer_should_write.csv", "a", encoding="utf-8"
     ) as f:
         f.write(
-            f"{get_report_date()}|ARTICLE_WRITER|EVALUATOR|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}\n"
+            f"{get_report_date()}|ARTICLE_WRITER|EVALUATOR|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|\n"
         )
     ##############################################
     if result.binary_score == "yes":
@@ -156,6 +116,78 @@ def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
     else:
         print("NEXT: END")
         return "not_relevant"
+
+
+def translate_article(state: AgentState) -> AgentState:
+    # print(f"translate_article: Current state: {state}")
+
+    llm_translation = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+
+    translation_system = """You are a translator converting articles into German. Translate the text accurately while maintaining the original tone and style."""
+    translation_prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", translation_system),
+            ("human", "Article to translate:\n\n {article}"),
+        ]
+    )
+
+    translator = translation_prompt | llm_translation
+
+    result = translator.invoke(
+        {
+            "article": "It has been reported that Messi will transfer from Real Madrid to FC Barcelona."
+        }
+    )
+    article = state["article_state"]
+    INPUT = article
+    result = translator.invoke({"article": article})
+    OUTPUT = result
+    #################### EVALS02 ####################
+    #
+    # This can be standardised during development
+    # DATE|COMPONENT_CODE|MODEL|TEMPERATURE|INPUT|OUTPUT and any optional fields
+    #
+    with open(
+        "./src/case_study/02_article_writer_translate.csv", "a", encoding="utf-8"
+    ) as f:
+        f.write(
+            f"{get_report_date()}|ARTICLE_WRITER|EVALUATOR|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|\n"
+        )
+    ##############################################
+    state["article_state"] = result.content
+    return state
+
+
+def expand_article(state: AgentState) -> AgentState:
+
+    llm_expansion = ChatOpenAI(model="gpt-4o-mini", temperature=0.5)
+    expansion_system = """You are a writer tasked with expanding the given article to at least 200 words while maintaining relevance, coherence, and the original tone."""
+    expansion_prompt = ChatPromptTemplate.from_messages(
+        [("system", expansion_system), ("human", "Original article:\n\n {article}")]
+    )
+
+    expander = expansion_prompt | llm_expansion
+
+    print(f"expand_article: Current state: {state}")
+    article = state["article_state"]
+    INPUT = article
+    result = expander.invoke({"article": article})
+    # print(result)
+    OUTPUT = result.content
+    state["article_state"] = result.content
+    #################### EVALS03 ####################
+    #
+    # This can be standardised during development
+    # DATE|COMPONENT_CODE|MODEL|TEMPERATURE|INPUT|OUTPUT and any optional fields
+    #
+    with open(
+        "./src/case_study/03_article_writer_expand.csv", "a", encoding="utf-8"
+    ) as f:
+        f.write(
+            f"{get_report_date()}|ARTICLE_WRITER|EVALUATOR|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|\n"
+        )
+    ##############################################
+    return state
 
 
 def editor_router(
@@ -180,8 +212,22 @@ def editor_router(
 
     article = state["article_state"]
     result = editor.invoke({"article": article})
-    # print(f"news_chef_router: Current state: {state}")
-    # print("Editor result: ", result)
+    print(f"news_chef_router: Current state: {state}")
+    print("Editor result: ", result)
+    INPUT = article
+    OUTPUT = result
+    #################### EVALS04 ####################
+    #
+    # This can be standardised during development
+    # DATE|COMPONENT_CODE|MODEL|TEMPERATURE|INPUT|OUTPUT and any optional fields
+    #
+    with open(
+        "./src/case_study/04_article_writer_publishable.csv", "a", encoding="utf-8"
+    ) as f:
+        f.write(
+            f"{get_report_date()}|ARTICLE_WRITER|PUBLISHER|{MODEL}|{TEMPERATURE}|{INPUT[:75]}...|{OUTPUT}|\n"
+        )
+    ##############################################
     if result.can_be_posted == "yes":
         return "publisher"
     elif result.is_language_german == "yes":
@@ -218,7 +264,7 @@ app = workflow.compile()
 
 print("\n======================================")
 print("FIRST EXAMPLE...\n")
-initial_state = {"article_state": "New restaurant opens in the city"}
+initial_state = {"article_state": "Planning permission for 49 England Road sought"}
 result = app.invoke(initial_state)
 
 print("Final result:", result)
