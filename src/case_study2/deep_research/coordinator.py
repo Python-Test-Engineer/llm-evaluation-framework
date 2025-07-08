@@ -166,18 +166,6 @@ class ResearchCoordinator:
                     f"  [dim]Analysis completed in {analysis_time:.2f}s[/dim]\n"
                 )
 
-                with open(
-                    "./src/case_study2/deep_research/output/log.md",
-                    "a",
-                    encoding="utf-8",
-                ) as f:
-                    f.write("\nSUNNARY PREVIEW\n")
-                    f.write(
-                        f"\n{summary_preview}\n\nAnalysis completed in {analysis_time:.2f}s\n\n"
-                    )
-                    f.write(f"# SUMMARY\n")
-                    f.write(f"Summary: {agent_result.final_output}\n\n")
-
         console.print(
             f"\n[bold green]✓ Research round complete![/bold green] Found {len(all_search_results)} sources across {len(queries)} queries."
         )
@@ -217,4 +205,6 @@ class ResearchCoordinator:
 
             result = await Runner.run(synthesis_agent, input=findings_text)
 
+            console.print(Panel(f"[bold cyan]Synthesis Report[/bold cyan]"))
+            console.print(f"[yellow]Report:[/yellow] {result.final_output}")
             return result.final_output
