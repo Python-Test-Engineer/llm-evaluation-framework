@@ -1,8 +1,12 @@
+"""Generates queries for research which will then get N URLS from DuckDuckGo."""
+
 from agents import Agent
 from pydantic import BaseModel
 
 
-QUERY_AGENT_PROMPT = """You are a helpful assistant that can generate search queries for research.
+NUM_QUERIES = 2
+
+QUERY_AGENT_PROMPT = f"""You are a helpful assistant that can generate search queries for research.
 For each query, follow these steps:
 
 1. First, think through and explain:
@@ -10,7 +14,7 @@ For each query, follow these steps:
    - Consider potential challenges and how you'll address them
    - Explain your strategy for finding comprehensive information
 
-2. Then generate ONLY 1 search queries that:
+2. Then generate ONLY {NUM_QUERIES} search queries that:
    - Are specific and focused on retrieving high-quality information
    - Cover different aspects of the topic
    - Will help find relevant and diverse information

@@ -1,6 +1,4 @@
 import time
-import re
-from random import randint
 from agents import Runner, trace
 from ddgs import DDGS
 from rich.console import Console
@@ -8,13 +6,19 @@ from rich.panel import Panel
 from rich.markdown import Markdown
 
 from models import SearchResult
+
 from research_agents.follow_up_agent import FollowUpDecisionResponse
 from research_agents.follow_up_agent import follow_up_decision_agent
 from research_agents.search_agent import search_agent
-from research_agents.query_agent import QueryResponse, query_agent
+
 from research_agents.synthesis_agent import synthesis_agent
+from research_agents.query_agent import QueryResponse, query_agent
+
 
 console = Console()
+
+# The number of sub queries in the original query
+MAX_SEARCH_RESULTS = 2
 
 
 class ResearchCoordinator:
@@ -27,65 +31,61 @@ class ResearchCoordinator:
         with trace("Deep Research Workflow"):
 
             query_response = await self.generate_queries()
+
             await self.perform_research_for_queries(queries=query_response.queries)
-
-            while self.iteration < 3:
-                decision_response = await self.generate_followup()
-
-                if not decision_response.should_follow_up:
-                    console.print(
-                        "[cyan]No more research needed. Synthesizing report...[/cyan]"
-                    )
-                    break
-
-                self.iteration += 1
-                console.print(
-                    f"[cyan]Conducting follow-up research (iteration {self.iteration})...[/cyan]"
-                )
-
-                await self.perform_research_for_queries(
-                    queries=decision_response.queries
-                )
 
             final_report = await self.synthesis_report()
 
             console.print("\n[bold green]✓ Research complete![/bold green]\n")
             console.print(Markdown(final_report))
+            with open("./src/case_study2/deep_research/output/report.md", "w") as f:
+                f.write(final_report)
 
             return final_report
 
     async def generate_queries(self) -> QueryResponse:
+        """This generates a number od query terms to be used for the research as well as its thoughts and queries to run for each."""
         with console.status("[bold cyan]Analyzing query...[/bold cyan]") as status:
 
             # Run the query agent
             result = await Runner.run(query_agent, input=self.query)
 
             # Display the results
-            console.print(Panel("[bold cyan]Query Analysis[/bold cyan]"))
+            console.print(Panel(f"[bold cyan]Query Analysis[/bold cyan]"))
             console.print(f"[yellow]Thoughts:[/yellow] {result.final_output.thoughts}")
-            query_plan_name = (
-                "01_generated_search_queries_" + self.query.replace(" ", "_").lower()
-            )
             console.print("\n[yellow]Generated Search Queries:[/yellow]")
-            # =================================================
-
-            # EVALS
             for i, query in enumerate(result.final_output.queries, 1):
                 console.print(f"  {i}. {query}")
-            with open(
-                f"./src/deep_research/outputs/{query_plan_name}.md",
-                "w",
-                encoding="utf-8",
-            ) as file:
-                file.write("\n".join(result.final_output.queries))
-            # =================================================
+            # This will log THOUGHTSD and QUERIES it will use (3)
+            with open("./src/case_study2/deep_research/output/log.md", "w") as f:
+                f.write(f"# THOUGHTS - {query}\n")
+                f.write(f"\n{result.final_output.thoughts}\n")
+                f.write("\n# GENERATED SEARCH QUERIES\n")
+                for i, query in enumerate(result.final_output.queries, 1):
+                    f.write(f"\n  {i}. {query}\n")
 
             return result.final_output
 
     def duckduckgo_search(self, query: str):
+        """
+        Executes a search query using the DuckDuckGo search engine.
+
+        Args:
+            query (str): The search query string.
+
+        Returns:
+            list: A list of search results, each containing details such as
+                title and URL. Returns an empty list if an error occurs
+                during the search process.
+        """
+
         try:
             results = DDGS().text(
-                query, region="us-en", safesearch="on", timelimit="y", max_results=5
+                query,
+                region="us-en",
+                safesearch="on",
+                timelimit="y",
+                max_results=MAX_SEARCH_RESULTS,
             )
             return results
         except Exception as ex:
@@ -99,6 +99,42 @@ class ResearchCoordinator:
         for query in queries:
             search_results = self.duckduckgo_search(query)
             all_search_results[query] = search_results
+        # Query items for each of the three main queries
+        for query in queries:
+            console.print(f"\n[bold cyan]Searching for:[/bold cyan] {query}")
+            with open("./src/case_study2/deep_research/output/log.md", "a") as f:
+                f.write(f"\n\n## SUB QUERY: {query}\n")
+            for result in all_search_results[query]:
+                console.print(f"  [green]Result:[/green] {result['title']}")
+                console.print(f"  [dim]URL:[/dim] {result['href']}")
+                console.print(f"  [cyan]Analyzing content...[/cyan]")
+
+                start_analysis_time = time.time()
+                search_input = f"Title: {result['title']}\nURL: {result['href']}"
+                agent_result = await Runner.run(search_agent, input=search_input)
+                analysis_time = time.time() - start_analysis_time
+                with open(
+                    "./src/case_study2/deep_research/output/log.md",
+                    "a",
+                    encoding="utf-8",
+                ) as f:
+                    f.write(
+                        f"\nWeb Query: {result['title']} - URL: {result['href']} - TIME: {analysis_time} now analyzing content...\n\n"
+                    )
+
+                search_result = SearchResult(
+                    title=result["title"],
+                    url=result["href"],
+                    summary=agent_result.final_output,
+                )
+
+                self.search_results.append(search_result)
+
+                summary_preview = agent_result.final_output[:100] + (
+                    "..." if len(agent_result.final_output) > 100 else ""
+                )
+
+                console.print(f"  [green]Summary:[/green] {summary_preview}")
 
         for query in queries:
             console.print(f"\n[bold cyan]Searching for:[/bold cyan] {query}")
@@ -106,28 +142,11 @@ class ResearchCoordinator:
             for result in all_search_results[query]:
                 console.print(f"  [green]Result:[/green] {result['title']}")
                 console.print(f"  [dim]URL:[/dim] {result['href']}")
-                console.print("   [cyan]Analyzing content...[/cyan]")
+                console.print(f"  [cyan]Analyzing content...[/cyan]")
 
                 start_analysis_time = time.time()
                 search_input = f"Title: {result['title']}\nURL: {result['href']}"
                 agent_result = await Runner.run(search_agent, input=search_input)
-                # =================================================
-
-                # EVALS
-                query = query.replace(" ", "_").lower()
-                # strip all non-alphanumeric characters from query
-                query_title = re.sub(r"\W+", "", query)
-                try:
-                    with open(
-                        f"./src/deep_research/outputs/01_search_queries_{query_title}.md",
-                        "a",
-                        encoding="utf-8",
-                    ) as file:
-                        file.write(f"{query}\n")
-                except Exception as ex:
-                    console.print(f"[bold red]Error:[/bold red] {str(ex)}")
-
-                # =================================================
                 analysis_time = time.time() - start_analysis_time
 
                 search_result = SearchResult(
@@ -147,21 +166,21 @@ class ResearchCoordinator:
                     f"  [dim]Analysis completed in {analysis_time:.2f}s[/dim]\n"
                 )
 
+                with open(
+                    "./src/case_study2/deep_research/output/log.md",
+                    "a",
+                    encoding="utf-8",
+                ) as f:
+                    f.write("\nSUNNARY PREVIEW\n")
+                    f.write(
+                        f"\n{summary_preview}\n\nAnalysis completed in {analysis_time:.2f}s\n\n"
+                    )
+                    f.write(f"# SUMMARY\n")
+                    f.write(f"Summary: {agent_result.final_output}\n\n")
+
         console.print(
             f"\n[bold green]✓ Research round complete![/bold green] Found {len(all_search_results)} sources across {len(queries)} queries."
         )
-
-    async def synthesis_report(self) -> str:
-        with console.status(
-            "[bold cyan]Synthesizing research findings...[/bold cyan]"
-        ) as status:
-            findings_text = f"Query: {self.query}\n\nSearch Results:\n"
-            for i, result in enumerate(self.search_results, 1):
-                findings_text += f"\n{i}. Title: {result.title}\n   URL: {result.url}\n   Summary: {result.summary}\n"
-
-            result = await Runner.run(synthesis_agent, input=findings_text)
-
-            return result.final_output
 
     async def generate_followup(self) -> FollowUpDecisionResponse:
         with console.status(
@@ -173,7 +192,7 @@ class ResearchCoordinator:
 
             result = await Runner.run(follow_up_decision_agent, input=findings_text)
 
-            console.print(Panel("[bold cyan]Follow-up Decision[/bold cyan]"))
+            console.print(Panel(f"[bold cyan]Follow-up Decision[/bold cyan]"))
             console.print(
                 f"[yellow]Decision:[/yellow] {'More research needed' if result.final_output.should_follow_up else 'Research complete'}"
             )
@@ -181,24 +200,21 @@ class ResearchCoordinator:
                 f"[yellow]Reasoning:[/yellow] {result.final_output.reasoning}"
             )
 
-            rnd = randint(1000, 9999)
-
             if result.final_output.should_follow_up:
                 console.print("\n[yellow]Follow-up Queries:[/yellow]")
                 for i, query in enumerate(result.final_output.queries, 1):
                     console.print(f"  {i}. {query}")
-                    # =================================================
 
-                    # EVALS
-                    follow_up_name = (
-                        "follow_up_queries_" + self.query.replace(" ", "_").lower()
-                    )
-                    with open(
-                        f"./src/deep_research/outputs/{follow_up_name}_{rnd}.md",
-                        "a",
-                        encoding="utf-8",
-                    ) as file:
-                        file.write("\n".join(result.final_output.queries))
-                    # =================================================
+            return result.final_output
+
+    async def synthesis_report(self) -> str:
+        with console.status(
+            "[bold cyan]Synthesizing research findings...[/bold cyan]"
+        ) as status:
+            findings_text = f"Query: {self.query}\n\nSearch Results:\n"
+            for i, result in enumerate(self.search_results, 1):
+                findings_text += f"\n{i}. Title: {result.title}\n   URL: {result.url}\n   Summary: {result.summary}\n"
+
+            result = await Runner.run(synthesis_agent, input=findings_text)
 
             return result.final_output
