@@ -202,9 +202,18 @@ class ResearchCoordinator:
             findings_text = f"Query: {self.query}\n\nSearch Results:\n"
             for i, result in enumerate(self.search_results, 1):
                 findings_text += f"\n{i}. Title: {result.title}\n   URL: {result.url}\n   Summary: {result.summary}\n"
-
+            with open(
+                "./src/case_study2/deep_research/output/log.md", "a", encoding="utf-8"
+            ) as f:
+                f.write("\n### Synthesising Report...\n")
             result = await Runner.run(synthesis_agent, input=findings_text)
 
             console.print(Panel(f"[bold cyan]Synthesis Report[/bold cyan]"))
             console.print(f"[yellow]Report:[/yellow] {result.final_output}")
+
+            with open(
+                "./src/case_study2/deep_research/output/log.md", "a", encoding="utf-8"
+            ) as f:
+                f.write("\n### Final Report:\n")
+                f.write(f"\n{result.final_output}\n")
             return result.final_output
