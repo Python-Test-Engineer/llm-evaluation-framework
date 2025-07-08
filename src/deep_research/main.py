@@ -1,4 +1,4 @@
-"""Based on Kody Simpson Deep Research https://www.youtube.com/watch?v=gFcAfU3V1Zo&t=6182s"""
+"""Based on Kody Simpson Deep Research https://www.youtube.com/watch?v=RQ5COVSYyJY&list=PLfu_Bpi_zcDPj1aR3zgS-TAwsxXetHzrW&index=13"""
 
 from random import randint
 import asyncio
