@@ -50,8 +50,8 @@ class ArticlePostabilityGrader(BaseModel):
     is_not_sensationalistic: str = Field(
         description="The article is NOT written in a sensationalistic style, 'yes' or 'no'"
     )
-    is_language_german: str = Field(
-        description="The language of the article is German, 'yes' or 'no'"
+    is_language_french: str = Field(
+        description="The language of the article is French, 'yes' or 'no'"
     )
 
 
@@ -87,9 +87,9 @@ def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
     llm = ChatOpenAI(model=MODEL, temperature=TEMPERATURE)
     structured_llm_grader = llm.with_structured_output(TransferNewsGrader)
 
-    system = """You are a grader assessing whether a news article concerns a football transfer. \n
-        Check if the article explicitly mentions player transfers between clubs, potential transfers, or confirmed transfers. \n
-        Provide a binary score 'yes' or 'no' to indicate whether the news is about a football transfer."""
+    system = """You are a researcher that determines the content type of an article.
+        Check if the article refers to any technology area, Artificial Intelligence, Nachine Learning, Data Science or any programming languages.
+        Provide a binary score 'yes' or 'no' to indicate whether the article is technical in nature."""
     grade_prompt = ChatPromptTemplate.from_messages(
         [("system", system), ("human", "News Article:\n\n {article}")]
     )
@@ -124,10 +124,10 @@ def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
 
 def translate_article(state: AgentState) -> AgentState:
     # print(f"translate_article: Current state: {state}")
-
+    article = state["article_state"]
     llm_translation = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
-    translation_system = """You are a translator converting articles into German. Translate the text accurately while maintaining the original tone and style."""
+    translation_system = """You are a translator converting articles into French. Translate the text accurately while maintaining the original tone and style."""
     translation_prompt = ChatPromptTemplate.from_messages(
         [
             ("system", translation_system),
@@ -137,12 +137,8 @@ def translate_article(state: AgentState) -> AgentState:
 
     translator = translation_prompt | llm_translation
 
-    result = translator.invoke(
-        {
-            "article": "It has been reported that Messi will transfer from Real Madrid to FC Barcelona."
-        }
-    )
-    article = state["article_state"]
+    result = translator.invoke({"article": article})
+
     INPUT = article
     result = translator.invoke({"article": article})
     OUTPUT = result
@@ -157,7 +153,7 @@ def translate_article(state: AgentState) -> AgentState:
         encoding="utf-8",
     ) as f:
         f.write(
-            f"{get_report_date()}|ARTICLE_WRITER|EVALUATOR|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|\n"
+            f"{get_report_date()}|ARTICLE_WRITER|TRANSLATE|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|\n"
         )
     ##############################################
     state["article_state"] = result.content
@@ -165,7 +161,7 @@ def translate_article(state: AgentState) -> AgentState:
 
 
 def expand_article(state: AgentState) -> AgentState:
-
+    article = state["article_state"]
     llm_expansion = ChatOpenAI(model="gpt-4o-mini", temperature=0.5)
     expansion_system = """You are a writer tasked with expanding the given article to at least 200 words while maintaining relevance, coherence, and the original tone."""
     expansion_prompt = ChatPromptTemplate.from_messages(
@@ -192,7 +188,7 @@ def expand_article(state: AgentState) -> AgentState:
         encoding="utf-8",
     ) as f:
         f.write(
-            f"{get_report_date()}|ARTICLE_WRITER|EVALUATOR|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|\n"
+            f"{get_report_date()}|ARTICLE_WRITER|EXPANDER|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|\n"
         )
     ##############################################
     return state
@@ -208,10 +204,10 @@ def editor_router(
         ArticlePostabilityGrader
     )
 
-    postability_system = """You are a grader assessing whether a news article is ready to be posted, if it meets the minimum word count of 50 words, is not written in a sensationalistic style, and if it is in German. \n
+    postability_system = """You are a grader assessing whether a news article is ready to be posted, if it meets the minimum word count of 50 words, is not written in a sensationalistic style, and if it is in FRENCH. \n
         Evaluate the article for grammatical errors, completeness, appropriateness for publication, and EXAGERATED sensationalism. \n
-        Also, confirm if the language used in the article is German and it meets the word count requirement. \n
-        Provide four binary scores: one to indicate if the article can be posted ('yes' or 'no'), one for adequate word count ('yes' or 'no'), one for sensationalistic writing ('yes' or 'no'), and another if the language is German ('yes' or 'no')."""
+        Also, confirm if the language used in the article is FRENCH and it meets the word count requirement. \n
+        Provide four binary scores: one to indicate if the article can be posted ('yes' or 'no'), one for adequate word count ('yes' or 'no'), one for sensationalistic writing ('yes' or 'no'), and another if the language is FRENCH ('yes' or 'no')."""
     postability_grade_prompt = ChatPromptTemplate.from_messages(
         [("system", postability_system), ("human", "News Article:\n\n {article}")]
     )
@@ -224,6 +220,7 @@ def editor_router(
     print("Editor result: ", result)
     INPUT = article
     OUTPUT = result
+
     #################### EVALS04 ####################
     #
     # This can be standardised during development
@@ -240,7 +237,7 @@ def editor_router(
     ##############################################
     if result.can_be_posted == "yes":
         return "publisher"
-    elif result.is_language_german == "yes":
+    elif result.is_language_french == "yes":
         if result.meets_word_count == "no" or result.is_not_sensationalistic == "no":
             return "expander"
     return "translator"
@@ -281,9 +278,7 @@ print("Final result:", result)
 
 print("\n======================================")
 print("SECOND EXAMPLE...\n")
-initial_state = {
-    "article_state": "Football transfer news: Gascoine signs for Barcelona"
-}
+initial_state = {"article_state": "AI and Machine learning in modern business"}
 result = app.invoke(initial_state)
 
 print("Final article:\n\n", result["article_state"])
