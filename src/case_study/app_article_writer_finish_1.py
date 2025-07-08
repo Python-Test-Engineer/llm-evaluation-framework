@@ -143,7 +143,9 @@ def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
     # This can be standardised during development
     # DATE|COMPONENT_CODE|MODEL|TEMPERATURE|INPUT|OUTPUT and any optional fields
     #
-    with open("./src/case_study/article_writer.csv", "a", encoding="utf-8") as f:
+    with open(
+        "./src/case_study/article_writer_should_write.csv", "a", encoding="utf-8"
+    ) as f:
         f.write(
             f"{get_report_date()}|ARTICLE_WRITER|EVALUATOR|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}\n"
         )

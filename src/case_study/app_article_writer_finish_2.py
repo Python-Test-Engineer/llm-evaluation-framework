@@ -19,6 +19,9 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
+MODEL = "gpt-4o-mini"
+TEMPERATURE = 0
+
 
 def get_report_date():
     """
@@ -89,7 +92,21 @@ def translate_article(state: AgentState) -> AgentState:
         }
     )
     article = state["article_state"]
+    INPUT = article
     result = translator.invoke({"article": article})
+    OUTPUT = result
+    #################### EVALS02 ####################
+    #
+    # This can be standardised during development
+    # DATE|COMPONENT_CODE|MODEL|TEMPERATURE|INPUT|OUTPUT and any optional fields
+    #
+    with open(
+        "./src/case_study/02_article_writer_translate.csv", "a", encoding="utf-8"
+    ) as f:
+        f.write(
+            f"{get_report_date()}|ARTICLE_WRITER|EVALUATOR|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|\n"
+        )
+    ##############################################
     state["article_state"] = result.content
     return state
 
@@ -104,10 +121,25 @@ def expand_article(state: AgentState) -> AgentState:
 
     expander = expansion_prompt | llm_expansion
 
-    # print(f"expand_article: Current state: {state}")
+    print(f"expand_article: Current state: {state}")
     article = state["article_state"]
+    INPUT = article
     result = expander.invoke({"article": article})
+    # print(result)
+    OUTPUT = result.content
     state["article_state"] = result.content
+    #################### EVALS03 ####################
+    #
+    # This can be standardised during development
+    # DATE|COMPONENT_CODE|MODEL|TEMPERATURE|INPUT|OUTPUT and any optional fields
+    #
+    with open(
+        "./src/case_study/03_article_writer_expand.csv", "a", encoding="utf-8"
+    ) as f:
+        f.write(
+            f"{get_report_date()}|ARTICLE_WRITER|EVALUATOR|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|\n"
+        )
+    ##############################################
     return state
 
 
@@ -138,14 +170,16 @@ def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
     result = evaluator.invoke({"article": article})
     OUTPUT = result.binary_score
     print(f"evaluator_router: OUTPUT: {OUTPUT}")
-    #################### EVALS ####################
+    #################### EVALS01 ####################
     #
     # This can be standardised during development
     # DATE|COMPONENT_CODE|MODEL|TEMPERATURE|INPUT|OUTPUT and any optional fields
     #
-    with open("./src/case_study/article_writer.csv", "a", encoding="utf-8") as f:
+    with open(
+        "./src/case_study/01_article_writer_should_write.csv", "a", encoding="utf-8"
+    ) as f:
         f.write(
-            f"{get_report_date()}|ARTICLE_WRITER|EVALUATOR|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}\n"
+            f"{get_report_date()}|ARTICLE_WRITER|EVALUATOR|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|\n"
         )
     ##############################################
     if result.binary_score == "yes":
@@ -178,8 +212,22 @@ def editor_router(
 
     article = state["article_state"]
     result = editor.invoke({"article": article})
-    # print(f"news_chef_router: Current state: {state}")
-    # print("Editor result: ", result)
+    print(f"news_chef_router: Current state: {state}")
+    print("Editor result: ", result)
+    INPUT = article
+    OUTPUT = result
+    #################### EVALS04 ####################
+    #
+    # This can be standardised during development
+    # DATE|COMPONENT_CODE|MODEL|TEMPERATURE|INPUT|OUTPUT and any optional fields
+    #
+    with open(
+        "./src/case_study/04_article_writer_publishable.csv", "a", encoding="utf-8"
+    ) as f:
+        f.write(
+            f"{get_report_date()}|ARTICLE_WRITER|PUBLISHER|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|\n"
+        )
+    ##############################################
     if result.can_be_posted == "yes":
         return "publisher"
     elif result.is_language_german == "yes":
