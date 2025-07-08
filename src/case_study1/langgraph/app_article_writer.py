@@ -98,18 +98,22 @@ def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
     result = evaluator.invoke({"article": article})
     OUTPUT = result.binary_score
     print(f"evaluator_router: OUTPUT: {OUTPUT}")
+
     #################### EVALS01 ####################
     #
     # This can be standardised during development
     # DATE|COMPONENT_CODE|MODEL|TEMPERATURE|INPUT|OUTPUT and any optional fields
     #
     with open(
-        "./src/case_study/01_article_writer_should_write.csv", "a", encoding="utf-8"
+        "./src/case_study1/langgraph/01_article_writer_should_write.csv",
+        "a",
+        encoding="utf-8",
     ) as f:
         f.write(
             f"{get_report_date()}|ARTICLE_WRITER|EVALUATOR|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|\n"
         )
     ##############################################
+
     if result.binary_score == "yes":
         print("NEXT: EDITOR")
         return "editor"
@@ -148,7 +152,9 @@ def translate_article(state: AgentState) -> AgentState:
     # DATE|COMPONENT_CODE|MODEL|TEMPERATURE|INPUT|OUTPUT and any optional fields
     #
     with open(
-        "./src/case_study/02_article_writer_translate.csv", "a", encoding="utf-8"
+        "./src/case_study1/langgraph/02_article_writer_translate.csv",
+        "a",
+        encoding="utf-8",
     ) as f:
         f.write(
             f"{get_report_date()}|ARTICLE_WRITER|EVALUATOR|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|\n"
@@ -181,7 +187,9 @@ def expand_article(state: AgentState) -> AgentState:
     # DATE|COMPONENT_CODE|MODEL|TEMPERATURE|INPUT|OUTPUT and any optional fields
     #
     with open(
-        "./src/case_study/03_article_writer_expand.csv", "a", encoding="utf-8"
+        "./src/case_study1/langgraph/03_article_writer_expand.csv",
+        "a",
+        encoding="utf-8",
     ) as f:
         f.write(
             f"{get_report_date()}|ARTICLE_WRITER|EVALUATOR|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|\n"
@@ -222,7 +230,9 @@ def editor_router(
     # DATE|COMPONENT_CODE|MODEL|TEMPERATURE|INPUT|OUTPUT and any optional fields
     #
     with open(
-        "./src/case_study/04_article_writer_publishable.csv", "a", encoding="utf-8"
+        "./src/case_study1/langgraph/04_article_writer_publishable.csv",
+        "a",
+        encoding="utf-8",
     ) as f:
         f.write(
             f"{get_report_date()}|ARTICLE_WRITER|PUBLISHER|{MODEL}|{TEMPERATURE}|{INPUT[:75]}...|{OUTPUT}|\n"
