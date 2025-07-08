@@ -71,6 +71,53 @@ def evaluate_article(state: AgentState) -> AgentState:
     return state
 
 
+def publisher(state: AgentState) -> AgentState:
+    # print(f"publisher: Current state: {state}")
+    # print("FINAL_STATE in publisher:", state)
+    return state
+
+
+def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
+    article = state["article_state"]
+    INPUT = article
+    print(f"evaluator_router: INPUT: {article}")
+    MODEL = "gpt-4o-mini"
+    TEMPERATURE = 0
+
+    llm = ChatOpenAI(model=MODEL, temperature=TEMPERATURE)
+    structured_llm_grader = llm.with_structured_output(TransferNewsGrader)
+
+    system = """You are a grader assessing whether a news article concerns a football transfer. \n
+        Check if the article explicitly mentions player transfers between clubs, potential transfers, or confirmed transfers. \n
+        Provide a binary score 'yes' or 'no' to indicate whether the news is about a football transfer."""
+    grade_prompt = ChatPromptTemplate.from_messages(
+        [("system", system), ("human", "News Article:\n\n {article}")]
+    )
+    # should_write = grade_prompt | structured_llm_grader
+    evaluator = grade_prompt | structured_llm_grader
+    result = evaluator.invoke({"article": article})
+    OUTPUT = result.binary_score
+    print(f"evaluator_router: OUTPUT: {OUTPUT}")
+    #################### EVALS01 ####################
+    #
+    # This can be standardised during development
+    # DATE|COMPONENT_CODE|MODEL|TEMPERATURE|INPUT|OUTPUT and any optional fields
+    #
+    with open(
+        "./src/case_study/01_article_writer_should_write.csv", "a", encoding="utf-8"
+    ) as f:
+        f.write(
+            f"{get_report_date()}|ARTICLE_WRITER|EVALUATOR|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|\n"
+        )
+    ##############################################
+    if result.binary_score == "yes":
+        print("NEXT: EDITOR")
+        return "editor"
+    else:
+        print("NEXT: END")
+        return "not_relevant"
+
+
 def translate_article(state: AgentState) -> AgentState:
     # print(f"translate_article: Current state: {state}")
 
@@ -141,53 +188,6 @@ def expand_article(state: AgentState) -> AgentState:
         )
     ##############################################
     return state
-
-
-def publisher(state: AgentState) -> AgentState:
-    # print(f"publisher: Current state: {state}")
-    # print("FINAL_STATE in publisher:", state)
-    return state
-
-
-def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
-    article = state["article_state"]
-    INPUT = article
-    print(f"evaluator_router: INPUT: {article}")
-    MODEL = "gpt-4o-mini"
-    TEMPERATURE = 0
-
-    llm = ChatOpenAI(model=MODEL, temperature=TEMPERATURE)
-    structured_llm_grader = llm.with_structured_output(TransferNewsGrader)
-
-    system = """You are a grader assessing whether a news article concerns a football transfer. \n
-        Check if the article explicitly mentions player transfers between clubs, potential transfers, or confirmed transfers. \n
-        Provide a binary score 'yes' or 'no' to indicate whether the news is about a football transfer."""
-    grade_prompt = ChatPromptTemplate.from_messages(
-        [("system", system), ("human", "News Article:\n\n {article}")]
-    )
-    # should_write = grade_prompt | structured_llm_grader
-    evaluator = grade_prompt | structured_llm_grader
-    result = evaluator.invoke({"article": article})
-    OUTPUT = result.binary_score
-    print(f"evaluator_router: OUTPUT: {OUTPUT}")
-    #################### EVALS01 ####################
-    #
-    # This can be standardised during development
-    # DATE|COMPONENT_CODE|MODEL|TEMPERATURE|INPUT|OUTPUT and any optional fields
-    #
-    with open(
-        "./src/case_study/01_article_writer_should_write.csv", "a", encoding="utf-8"
-    ) as f:
-        f.write(
-            f"{get_report_date()}|ARTICLE_WRITER|EVALUATOR|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|\n"
-        )
-    ##############################################
-    if result.binary_score == "yes":
-        print("NEXT: EDITOR")
-        return "editor"
-    else:
-        print("NEXT: END")
-        return "not_relevant"
 
 
 def editor_router(
