@@ -149,8 +149,10 @@ def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
         )
     ##############################################
     if result.binary_score == "yes":
+        print("NEXT: EDITOR")
         return "editor"
     else:
+        print("NEXT: END")
         return "not_relevant"
 
 
@@ -216,7 +218,7 @@ print("\n======================================")
 print("FIRST EXAMPLE...\n")
 initial_state = {"article_state": "New restaurant opens in the city"}
 result = app.invoke(initial_state)
-print("NOT relevant article example")
+
 print("Final result:", result)
 
 print("\n======================================")
@@ -225,5 +227,5 @@ initial_state = {
     "article_state": "Football transfer news: Gascoine signs for Barcelona"
 }
 result = app.invoke(initial_state)
-print("Article is RELEVANT and needs to be written\n")
+
 print("Final article:\n\n", result["article_state"])
