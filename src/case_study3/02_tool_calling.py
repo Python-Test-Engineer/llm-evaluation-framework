@@ -48,25 +48,25 @@ def convert_c_to_f(centigrade: float, fahrenheit: float) -> float:
 
 
 @tool
-def convert_c_to_f_with_label(temperature: float) -> str:
+def describe_fahrenheit_with_label(temperature: float) -> str:
     """Given a temperature in Fahrenheit, convert it to a lable of either COLD, MILD, WARM or HOT."""
     if temperature < 45:
-        return "COLD"
+        return "|COLD"
     elif temperature < 65:
-        return "MILD"
+        return "|MILD"
     elif temperature < 75:
-        return "WARM"
+        return "|WARM"
     elif temperature < 100:
-        return "HOT"
+        return "|HOT"
     else:
-        return "NONE"
+        return "|NONE"
 
 
 tools = [
     get_weather,
     check_seating_availability,
     convert_c_to_f,
-    convert_c_to_f_with_label,
+    describe_fahrenheit_with_label,
 ]
 llm_with_tools = llm.bind_tools(tools)
 tools_called = ""
@@ -77,8 +77,9 @@ How will the weather be in munich today? Do you still have indoor seats availabl
 Q2 = """
 What is 32 centigrade in fahrenheit?
 """
-
-messages = [HumanMessage(Q2)]
+Q3 = """
+What is 15 centigrade in fahrenheit? What is the label for this temperature?"""
+messages = [HumanMessage(Q3)]
 
 
 console.print("[green]Starting...[/]")
@@ -89,7 +90,7 @@ tool_mapping = {
     "get_weather": get_weather,
     "check_seating_availability": check_seating_availability,
     "convert_c_to_f": convert_c_to_f,
-    "convert_c_to_f_with_label": convert_c_to_f_with_label,
+    "describe_fahrenheit_with_label": describe_fahrenheit_with_label,
 }
 
 tools_called = llm_output.tool_calls
