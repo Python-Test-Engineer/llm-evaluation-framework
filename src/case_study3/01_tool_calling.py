@@ -40,28 +40,41 @@ def check_seating_availability(location: str, seating_type: str):
         return "Sorry, seating information for this location is unavailable."
 
 
-tools = [get_weather, check_seating_availability]
+@tool
+def convert_c_to_f(centigrade: float, fahrenheit: float) -> float:
+    """Given a temperature in Celsius, convert it to Fahrenheit.
+    Uses the formula: °F = (°C × 1.8) + 32"""
+    if centigrade is not None:
+        return (centigrade * 1.8) + 32
+    else:
+        return "Sorry, I am unable to calculate the temperature."
+
+
+tools = [get_weather, check_seating_availability, convert_c_to_f]
 llm_with_tools = llm.bind_tools(tools)
 tools_called = ""
 
 console.print("[green]Starting...[/]")
-result = llm_with_tools.invoke("How will the weather be in munich today?")
-result = llm_with_tools.invoke(
-    "How will the weather be in munich today? Do you still have seats outdoor available?"
-)
 
-tools_called = result.tool_calls
-messages = [
-    HumanMessage(
-        "How will the weather be in munich today? Do you still have seats outdoor available?"
-    )
-]
+# result = llm_with_tools.invoke("How will the weather be in munich today?")
+# result = llm_with_tools.invoke(
+#     "How will the weather be in munich today? Do you still have seats outdoor available?"
+# )
+
+# tools_called = result.tool_calls
+# messages = [
+#     HumanMessage(
+#         "How will the weather be in munich today? Do you still have seats outdoor available?"
+#     )
+# ]
+messages = [HumanMessage("What is 32 centigrade in fahrenheit?")]
 llm_output = llm_with_tools.invoke(messages)
 messages.append(llm_output)
 
 tool_mapping = {
     "get_weather": get_weather,
     "check_seating_availability": check_seating_availability,
+    "convert_c_to_f": convert_c_to_f,
 }
 
 llm_output.tool_calls
