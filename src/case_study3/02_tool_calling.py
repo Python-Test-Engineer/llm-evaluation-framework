@@ -1,3 +1,5 @@
+# LLM Eval for tool calling that can use a chain of two tools. We can check correct tools are called with correct inputs and also the correct chain flow occurs.
+
 from datetime import datetime
 
 from langchain_core.messages import HumanMessage, ToolMessage
@@ -50,6 +52,7 @@ def convert_c_to_f(centigrade: float, fahrenheit: float) -> float:
 @tool
 def describe_fahrenheit_with_label(temperature: float) -> str:
     """Given a temperature in Fahrenheit, convert it to a lable of either COLD, MILD, WARM or HOT."""
+    # this has leading | so that the output is easier to parse as we get 85|HOT in the output
     if temperature < 45:
         return "|COLD"
     elif temperature < 65:
