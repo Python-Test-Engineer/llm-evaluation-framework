@@ -13,9 +13,6 @@ OUTPUT_DIR = "./src/case_study3/output/"
 llm = ChatOpenAI(model=MODEL, temperature=TEMPERATURE)
 
 
-llm.invoke("How will the weather be in munich today?")
-
-
 def get_time_now():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -50,24 +47,41 @@ def convert_c_to_f(centigrade: float, fahrenheit: float) -> float:
         return "Sorry, I am unable to calculate the temperature."
 
 
-tools = [get_weather, check_seating_availability, convert_c_to_f]
+@tool
+def convert_c_to_f_with_label(temperature: float) -> str:
+    """Given a temperature in Fahrenheit, convert it to a lable of either COLD, MILD, WARM or HOT."""
+    if temperature < 45:
+        return "COLD"
+    elif temperature < 65:
+        return "MILD"
+    elif temperature < 75:
+        return "WARM"
+    elif temperature < 100:
+        return "HOT"
+    else:
+        return "NONE"
+
+
+tools = [
+    get_weather,
+    check_seating_availability,
+    convert_c_to_f,
+    convert_c_to_f_with_label,
+]
 llm_with_tools = llm.bind_tools(tools)
 tools_called = ""
 
+Q1 = """
+How will the weather be in munich today? Do you still have indoor seats available?
+"""
+Q2 = """
+What is 32 centigrade in fahrenheit?
+"""
+
+messages = [HumanMessage(Q2)]
+
+
 console.print("[green]Starting...[/]")
-
-result = llm_with_tools.invoke("How will the weather be in munich today?")
-result = llm_with_tools.invoke(
-    "How will the weather be in munich today? Do you still have seats indoors available?"
-)
-
-tools_called = result.tool_calls
-messages = [
-    HumanMessage(
-        "How will the weather be in munich today? Do you still have seats outdoor available?"
-    )
-]
-messages = [HumanMessage("What is 32 centigrade in fahrenheit?")]
 llm_output = llm_with_tools.invoke(messages)
 messages.append(llm_output)
 
@@ -75,9 +89,10 @@ tool_mapping = {
     "get_weather": get_weather,
     "check_seating_availability": check_seating_availability,
     "convert_c_to_f": convert_c_to_f,
+    "convert_c_to_f_with_label": convert_c_to_f_with_label,
 }
 
-llm_output.tool_calls
+tools_called = llm_output.tool_calls
 
 for tool_call in llm_output.tool_calls:
     tool = tool_mapping[tool_call["name"].lower()]
@@ -100,7 +115,7 @@ for message in messages:
 
 
 #################### EVALS01 ####################
-log = f"{get_time_now()}|TOOL_CALLING|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|{tools_called}|\n"
+log = f"{get_time_now()}|TOOL_CALLING|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|{tools_called}|"
 console.print(log)
 with open(f"{OUTPUT_DIR}/01_tool_calling.csv", "a") as f:
     f.write(f"{log}\n")
