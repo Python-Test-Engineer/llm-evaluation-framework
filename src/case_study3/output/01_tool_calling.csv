@@ -1,0 +1,4 @@
+2025-07-09 13:22:04|TOOL_CALLING|gpt-4o-mini|0|How will the weather be in munich today? Do you still have seats outdoor available?|It's 10 degrees Celsius and cold.Yes, we still have seats available outdoors.|[{'name': 'get_weather', 'args': {'location': 'Munich'}, 'id': 'call_g47ofWwfGf12VpnpfhSeE4Jh', 'type': 'tool_call'}, {'name': 'check_seating_availability', 'args': {'location': 'Munich', 'seating_type': 'outdoor'}, 'id': 'call_6vvTvju6d3GJgissS3TZXtyT', 'type': 'tool_call'}]|
+
+2025-07-09 13:23:30|TOOL_CALLING|gpt-4o-mini|0|How will the weather be in munich today? Do you still have seats outdoor available?|It's 10 degrees Celsius and cold.Yes, we still have seats available outdoors.|[{'name': 'get_weather', 'args': {'location': 'Munich'}, 'id': 'call_2qKAkypJunPID6V9wRSAbxwk', 'type': 'tool_call'}, {'name': 'check_seating_availability', 'args': {'location': 'Munich', 'seating_type': 'outdoor'}, 'id': 'call_zklkKMQI2XxwqDqykxyZ7WHN', 'type': 'tool_call'}]|
+

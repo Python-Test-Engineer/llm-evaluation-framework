@@ -1,16 +1,15 @@
 from datetime import datetime
 
-
-from dotenv import load_dotenv, find_dotenv
 from langchain_core.messages import HumanMessage, ToolMessage
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 from rich.console import Console
 
 console = Console()
-load_dotenv(find_dotenv())
+
 MODEL = "gpt-4o-mini"
 TEMPERATURE = 0
+OUTPUT_DIR = "./src/case_study3/output/"
 llm = ChatOpenAI(model=MODEL, temperature=TEMPERATURE)
 
 
@@ -44,6 +43,8 @@ def check_seating_availability(location: str, seating_type: str):
 tools = [get_weather, check_seating_availability]
 llm_with_tools = llm.bind_tools(tools)
 tools_called = ""
+
+console.print("[green]Starting...[/]")
 result = llm_with_tools.invoke("How will the weather be in munich today?")
 result = llm_with_tools.invoke(
     "How will the weather be in munich today? Do you still have seats outdoor available?"
@@ -88,6 +89,7 @@ for message in messages:
 #################### EVALS01 ####################
 log = f"{get_time_now()}|TOOL_CALLING|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|{tools_called}|\n"
 console.print(log)
-with open("./src/case_study/05_tool_calling.csv", "a") as f:
+with open(f"{OUTPUT_DIR}/01_tool_calling.csv", "a") as f:
     f.write(f"{log}\n")
 #################################################
+console.print(f"[green]Done! Logged to {OUTPUT_DIR}/01_tool_calling.csv[/]")
