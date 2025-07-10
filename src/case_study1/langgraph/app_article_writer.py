@@ -50,7 +50,7 @@ class ArticlePostabilityGrader(BaseModel):
         description="The article is ready to be posted, 'yes' or 'no'"
     )
     meets_word_count: str = Field(
-        description="The article has at least 50 words, 'yes' or 'no'"
+        description=f"The article has at least {CONTENT_LENGTH} words, 'yes' or 'no'"
     )
     is_not_sensationalistic: str = Field(
         description="The article is NOT written in a sensationalistic style, 'yes' or 'no'"
