@@ -7,7 +7,7 @@ on:
 
 jobs:
   version:
-    uses: Python-Test-Engineer/llm-evaluation-framework/.github/workflows/reusable_version_workflow.yaml@main
+    uses: Python-Test-Engineer/llm-evaluation-framework/.github/workflows/reusable_01_workflow.yaml@main
     permissions:
       contents: write
     
