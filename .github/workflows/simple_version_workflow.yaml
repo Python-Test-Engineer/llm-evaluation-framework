@@ -7,7 +7,7 @@ on:
 
 jobs:
   version:
-    uses: ./.github/workflows/reusable-version-increment.yml
+    uses: Python-Test-Engineer/llm-evaluation-framework/.github/workflows/reusable_version_workflow.yaml@main
     permissions:
       contents: write
     
