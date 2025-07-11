@@ -21,4 +21,3 @@ A report `index.html` will be in htmlcov folder.
 `python -m pytest -vs  .\tests\00_check_setup\Xtest_09_xdist.py -n 2`
 
 Not included in usual test suite as it is designed as a demo for xdist.
-
