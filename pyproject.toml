@@ -1,6 +1,6 @@
 [project]
 name = "llm-evaluation-framework"
-version = 1.7.0"
+version = "2.0.0"
 description = "An integration of Pytest Full Stack, Evidently and AI Agents"
 readme = "README.md"
 requires-python = ">=3.12"
