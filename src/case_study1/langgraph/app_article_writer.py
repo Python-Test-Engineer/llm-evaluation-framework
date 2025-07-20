@@ -195,6 +195,8 @@ def translate_article(state: AgentState) -> AgentState:
     start = time.perf_counter()
 
     result = translator.invoke({"article": article})
+    result_dict = result.dict()
+    print(f"Result as dict: {result_dict}")
     end = time.perf_counter()
     time_taken = end - start
     print(f"Execution time: {time_taken:.2f} seconds")
@@ -210,7 +212,7 @@ def translate_article(state: AgentState) -> AgentState:
         encoding="utf-8",
     ) as f:
         f.write(
-            f"{get_report_date()}|ARTICLE_WRITER|TRANSLATE|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|{result}|{time_taken:.2f}\n"
+            f"{get_report_date()}|ARTICLE_WRITER|TRANSLATE|{MODEL}|{TEMPERATURE}|{INPUT}|{time_taken:.2f}|{result_dict}\n"
         )
     ##############################################
     state["article_state"] = result.content
@@ -238,6 +240,8 @@ def expand_article(state: AgentState) -> AgentState:
     print(f"Execution time: {time_taken:.2f} seconds")
     OUTPUT = result.content
     print(type(result))
+    result_dict = result.dict()
+    print(f"Result as dict: {result_dict}")
     state["article_state"] = result.content
     #################### EVALS03 ####################
     #
@@ -250,7 +254,7 @@ def expand_article(state: AgentState) -> AgentState:
         encoding="utf-8",
     ) as f:
         f.write(
-            f"{get_report_date()}|ARTICLE_WRITER|EXPANDER|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|{result}|{time_taken:.2f}\n"
+            f"{get_report_date()}|ARTICLE_WRITER|EXPANDER|{MODEL}|{TEMPERATURE}|{INPUT}|{time_taken:.2f}|{result_dict}\n"
         )
     ##############################################
     return state
