@@ -7,6 +7,7 @@
 import os
 from datetime import datetime
 import warnings
+import time
 
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
@@ -131,7 +132,11 @@ def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
     )
     # should_write = grade_prompt | structured_llm_grader
     evaluator = grade_prompt | structured_llm_grader
+    start = time.perf_counter()
     result = evaluator.invoke({"article": article})
+    end = time.perf_counter()
+    time_taken = end - start
+    print(f"Execution time: {time_taken:.2f} seconds")
     print("RESULT:")
     print(result)
     print("END RESULT")
@@ -156,7 +161,7 @@ def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
         encoding="utf-8",
     ) as f:
         f.write(
-            f"{get_report_date()}|ARTICLE_WRITER|EVALUATOR|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|{input_tokens}|{output_tokens}|\n"
+            f"{get_report_date()}|ARTICLE_WRITER|EVALUATOR|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|{input_tokens}|{output_tokens}|{time_taken:.2f}|\n"
         )
     ##############################################
 
@@ -186,7 +191,13 @@ def translate_article(state: AgentState) -> AgentState:
     result = translator.invoke({"article": article})
 
     INPUT = article
+
+    start = time.perf_counter()
+
     result = translator.invoke({"article": article})
+    end = time.perf_counter()
+    time_taken = end - start
+    print(f"Execution time: {time_taken:.2f} seconds")
     OUTPUT = result
     #################### EVALS02 ####################
     #
@@ -199,7 +210,7 @@ def translate_article(state: AgentState) -> AgentState:
         encoding="utf-8",
     ) as f:
         f.write(
-            f"{get_report_date()}|ARTICLE_WRITER|TRANSLATE|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|{result}|\n"
+            f"{get_report_date()}|ARTICLE_WRITER|TRANSLATE|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|{result}|{time_taken:.2f}|\n"
         )
     ##############################################
     state["article_state"] = result.content
@@ -219,8 +230,12 @@ def expand_article(state: AgentState) -> AgentState:
     print(f"expand_article: Current state: {state}")
     article = state["article_state"]
     INPUT = article
+
+    start = time.perf_counter()
     result = expander.invoke({"article": article})
-    # print(result)
+    end = time.perf_counter()
+    time_taken = end - start
+    print(f"Execution time: {time_taken:.2f} seconds")
     OUTPUT = result.content
     state["article_state"] = result.content
     #################### EVALS03 ####################
@@ -234,7 +249,7 @@ def expand_article(state: AgentState) -> AgentState:
         encoding="utf-8",
     ) as f:
         f.write(
-            f"{get_report_date()}|ARTICLE_WRITER|EXPANDER|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|{result}|\n"
+            f"{get_report_date()}|ARTICLE_WRITER|EXPANDER|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|{result}|{time_taken:.2f}|\n"
         )
     ##############################################
     return state
@@ -261,7 +276,12 @@ def editor_router(
     editor = postability_grade_prompt | structured_llm_postability_grader
 
     article = state["article_state"]
+
+    start = time.perf_counter()
     result = editor.invoke({"article": article})
+    end = time.perf_counter()
+    time_taken = end - start
+    print(f"Execution time: {time_taken:.2f} seconds")
     print(f"news_chef_router: Current state: {state}")
     console.print(f"[dark_orange]Editor result: \n\t{result}[/]")
     INPUT = article
@@ -284,7 +304,7 @@ def editor_router(
         encoding="utf-8",
     ) as f:
         f.write(
-            f"{get_report_date()}|ARTICLE_WRITER|PUBLISHER|{MODEL}|{TEMPERATURE}|{INPUT[:75]}...|{OUTPUT}|{input_tokens}|{output_tokens}|\n"
+            f"{get_report_date()}|ARTICLE_WRITER|PUBLISHER|{MODEL}|{TEMPERATURE}|{INPUT[:75]}...|{OUTPUT}|{input_tokens}|{output_tokens}|{time_taken:.2f}|\n"
         )
     ##############################################
     num_words = len(INPUT.split())
