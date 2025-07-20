@@ -8,7 +8,7 @@ from rich.console import Console
 console = Console()
 
 
-load_dotenv(find_dotenv())  # Load environment variables from .env file
+load_dotenv(find_dotenv(), override=True)  # Load environment variables from .env file
 
 openai_api_key = os.getenv("OPENAI_API_KEY")
 if openai_api_key:

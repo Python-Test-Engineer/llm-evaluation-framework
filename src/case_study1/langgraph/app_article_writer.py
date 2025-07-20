@@ -21,7 +21,7 @@ import warnings
 
 warnings.filterwarnings("ignore")
 console = Console()
-load_dotenv(find_dotenv())
+load_dotenv(find_dotenv(), override=True)
 # Load environment variables from .env file
 MODEL = "gpt-4o-mini"
 TEMPERATURE = 0
@@ -95,7 +95,7 @@ def publisher(state: AgentState) -> AgentState:
 def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
     article = state["article_state"]
     INPUT = article
-    print(f"evaluator_router: INPUT: {article}")
+    print(f"evaluator_router:\n INPUT: {article}")
     MODEL = "gpt-4o-mini"
     TEMPERATURE = 0
 
@@ -105,54 +105,23 @@ def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
     )
     structured_llm_grader = llm.with_structured_output(TransferNewsGrader)
 
+    human_prompt = "News Article:\n\n {article}"
+
     system = f"""You are a researcher that determines the content type of an article.
         Check if the article refers to {SUBJECT} area.
         Provide a binary score 'yes' or 'no' to indicate whether the article is technical in nature."""
+
     grade_prompt = ChatPromptTemplate.from_messages(
-        [("system", system), ("human", "News Article:\n\n {article}")]
+        [("system", system), ("human", human_prompt)]
     )
     # should_write = grade_prompt | structured_llm_grader
     evaluator = grade_prompt | structured_llm_grader
     result = evaluator.invoke({"article": article})
-
-    # This is to get a different more detailed response from the LLM using OpenAI rather than LangChain
-    client = OpenAI()
-    completion = client.chat.completions.parse(
-        model="gpt-4o",
-        messages=[{"role": "user", "content": "News Article:\n\n {article}"}],
-        response_format=TransferNewsGrader,
-    )
-    # The completion object has these main attributes:
-    print(f"ID: {completion.id}")
-    print(f"Object: {completion.object}")
-    print(f"Created: {completion.created}")
-    print(f"Model: {completion.model}")
-    print(f"System fingerprint: {completion.system_fingerprint}")
-
-    # Usage statistics
-    usage = completion.usage
-    print(f"Prompt tokens: {usage.prompt_tokens}")
-    print(f"Completion tokens: {usage.completion_tokens}")
-    print(f"Total tokens: {usage.total_tokens}")
-
-    # Choice details
-    choice = completion.choices[0]
-    print(f"Finish reason: {choice.finish_reason}")
-    print(f"Index: {choice.index}")
-
-    # Message content
-    message = choice.message
-    print(f"Role: {message.role}")
-    print(f"Content: {message.content}")
-    print(f"Parsed: {message.parsed}")  # Your structured Pydantic object
-    print(f"Refusal: {message.refusal}")  # If model refused to respond
-
-    OUTPUT1 = completion.binary_score
-    console.print(f"[green italic]binary_score: {result}[/]")
-
+    print("RESULT:")
+    print(result)
+    print("END RESULT")
     OUTPUT = result.binary_score
-    console.print(f"[green]Evaluator Result: {result}[/]")
-    print(f"evaluator_router: OUTPUT: {OUTPUT}")
+    console.print(f"OUTPUT -> [green italic]binary_score: {OUTPUT}[/]")
 
     #################### EVALS01 ####################
     #
