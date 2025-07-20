@@ -1,3 +1,13 @@
+## 
+
+- `uv sync`
+- `uv pin 3.12`
+- `uv python pin 3.12`
+- `uv run 01_py_llm.py`
+
+
+
+
 ## Clear git cache
 
 `git rm -r --cached .`
