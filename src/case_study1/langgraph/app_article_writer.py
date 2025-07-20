@@ -237,6 +237,7 @@ def expand_article(state: AgentState) -> AgentState:
     time_taken = end - start
     print(f"Execution time: {time_taken:.2f} seconds")
     OUTPUT = result.content
+    print(type(result))
     state["article_state"] = result.content
     #################### EVALS03 ####################
     #
