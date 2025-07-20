@@ -6,8 +6,8 @@
 
 import os
 from datetime import datetime
+import warnings
 
-from openai import OpenAI
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 
@@ -17,28 +17,34 @@ from typing import TypedDict, Literal
 from pydantic import BaseModel, Field
 from rich.console import Console
 from dotenv import load_dotenv, find_dotenv
-import warnings
-
-
 import tiktoken
+from config_langgraph import (
+    PROVIDER,
+    MODEL,
+    TEMPERATURE,
+    LANGUAGE,
+    SUBJECT,
+    CONTENT_LENGTH,
+)
 
 
 warnings.filterwarnings("ignore")
 console = Console()
 load_dotenv(find_dotenv(), override=True)
-# Load environment variables from .env file
-MODEL = "gpt-4o-mini"
-TEMPERATURE = 0
-LANGUAGE = "FRENCH"
-SUBJECT = "AI, ML, Data Science, Programming, Web, Technology"
-CONTENT_LENGTH = 100
-MAX_LENGTH = 100
+
+console.print(f"\n[cyan]Using {PROVIDER} provider with model {MODEL}[/]")
+
+# MODEL = "gpt-4o-mini"
+# TEMPERATURE = 0
+# LANGUAGE = "FRENCH"
+# SUBJECT = "AI, ML, Data Science, Programming, Web, Technology"
+# CONTENT_LENGTH = 100
+
 human_prompt = "News Article:\n\n {article}"
+
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 if OPENAI_API_KEY:
-    console.print(
-        f"[green]OpenAI API Key exists and begins {OPENAI_API_KEY[:14]}...[/]"
-    )
+    console.print(f"[cyan]OpenAI API Key exists and begins {OPENAI_API_KEY[:14]}...[/]")
 else:
     console.print("[red]OpenAI API Key not set[/]")
 
@@ -257,14 +263,14 @@ def editor_router(
     article = state["article_state"]
     result = editor.invoke({"article": article})
     print(f"news_chef_router: Current state: {state}")
-    print("Editor result: ", result)
+    console.print(f"[dark_orange]Editor result: \n\t{result}[/]")
     INPUT = article
     OUTPUT = result
     input_tokens = count_tokens(human_prompt, MODEL)
     print(f"Estimated input tokens: {input_tokens}")
 
     # Count output tokens
-    output_tokens = count_tokens(str(result), MODEL)
+    output_tokens = count_tokens(str(OUTPUT), MODEL)
     print(f"Estimated output tokens: {output_tokens}")
     print(f"Estimated total tokens: {input_tokens + output_tokens}")
     #################### EVALS04 ####################
