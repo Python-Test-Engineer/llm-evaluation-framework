@@ -19,6 +19,10 @@ from rich.console import Console
 from dotenv import load_dotenv, find_dotenv
 import warnings
 
+
+import tiktoken
+
+
 warnings.filterwarnings("ignore")
 console = Console()
 load_dotenv(find_dotenv(), override=True)
@@ -36,6 +40,12 @@ if OPENAI_API_KEY:
     )
 else:
     console.print("[red]OpenAI API Key not set[/]")
+
+
+def count_tokens(text: str, model=MODEL) -> int:
+    """Count tokens in text using tiktoken"""
+    encoding = tiktoken.encoding_for_model(model)
+    return len(encoding.encode(text))
 
 
 def get_report_date():
@@ -123,6 +133,16 @@ def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
     OUTPUT = result.binary_score
     console.print(f"OUTPUT -> [green italic]binary_score: {OUTPUT}[/]")
 
+    input_tokens = count_tokens(human_prompt, MODEL)
+    print(f"Estimated input tokens: {input_tokens}")
+
+    # Make the call
+    result = evaluator.invoke({"article": article})
+
+    # Count output tokens
+    output_tokens = count_tokens(str(result), MODEL)
+    print(f"Estimated output tokens: {output_tokens}")
+    print(f"Estimated total tokens: {input_tokens + output_tokens}")
     #################### EVALS01 ####################
     #
     # This can be standardised during development
