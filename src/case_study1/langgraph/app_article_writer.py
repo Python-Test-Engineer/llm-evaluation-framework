@@ -4,28 +4,37 @@
 # https://www.youtube.com/watch?v=9HhcFiSgLok&list=PLNVqeXDm5tIqUIPQHLk5Xw5mpisruvsac&index=7
 
 
+import os
 from datetime import datetime
 
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
-
 
 from langgraph.graph import StateGraph, END
 from typing import TypedDict, Literal
 
 from pydantic import BaseModel, Field
 from rich.console import Console
-
+from dotenv import load_dotenv, find_dotenv
 import warnings
 
 warnings.filterwarnings("ignore")
 console = Console()
+load_dotenv(find_dotenv())
+# Load environment variables from .env file
 MODEL = "gpt-4o-mini"
 TEMPERATURE = 0
 LANGUAGE = "FRENCH"
 SUBJECT = "AI, ML, Data Science, Programming, Web, Technology"
 CONTENT_LENGTH = 100
 MAX_LENGTH = 100
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+if OPENAI_API_KEY:
+    console.print(
+        f"[green]OpenAI API Key exists and begins {OPENAI_API_KEY[:14]}...[/]"
+    )
+else:
+    console.print("[red]OpenAI API Key not set[/]")
 
 
 def get_report_date():
@@ -102,6 +111,7 @@ def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
     evaluator = grade_prompt | structured_llm_grader
     result = evaluator.invoke({"article": article})
     OUTPUT = result.binary_score
+
     print(f"evaluator_router: OUTPUT: {OUTPUT}")
 
     #################### EVALS01 ####################
@@ -115,7 +125,7 @@ def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
         encoding="utf-8",
     ) as f:
         f.write(
-            f"{get_report_date()}|ARTICLE_WRITER|EVALUATOR|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|\n"
+            f"{get_report_date()}|ARTICLE_WRITER|EVALUATOR|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|{result}|\n"
         )
     ##############################################
 
@@ -158,7 +168,7 @@ def translate_article(state: AgentState) -> AgentState:
         encoding="utf-8",
     ) as f:
         f.write(
-            f"{get_report_date()}|ARTICLE_WRITER|TRANSLATE|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|\n"
+            f"{get_report_date()}|ARTICLE_WRITER|TRANSLATE|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|{result}|\n"
         )
     ##############################################
     state["article_state"] = result.content
@@ -193,7 +203,7 @@ def expand_article(state: AgentState) -> AgentState:
         encoding="utf-8",
     ) as f:
         f.write(
-            f"{get_report_date()}|ARTICLE_WRITER|EXPANDER|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|\n"
+            f"{get_report_date()}|ARTICLE_WRITER|EXPANDER|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|{result}|\n"
         )
     ##############################################
     return state
@@ -237,7 +247,7 @@ def editor_router(
         encoding="utf-8",
     ) as f:
         f.write(
-            f"{get_report_date()}|ARTICLE_WRITER|PUBLISHER|{MODEL}|{TEMPERATURE}|{INPUT[:75]}...|{OUTPUT}|\n"
+            f"{get_report_date()}|ARTICLE_WRITER|PUBLISHER|{MODEL}|{TEMPERATURE}|{INPUT[:75]}...|{OUTPUT}|{result}|\n"
         )
     ##############################################
     num_words = len(INPUT.split())
