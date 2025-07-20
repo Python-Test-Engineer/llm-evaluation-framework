@@ -33,6 +33,7 @@ LANGUAGE = "FRENCH"
 SUBJECT = "AI, ML, Data Science, Programming, Web, Technology"
 CONTENT_LENGTH = 100
 MAX_LENGTH = 100
+human_prompt = "News Article:\n\n {article}"
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 if OPENAI_API_KEY:
     console.print(
@@ -115,8 +116,6 @@ def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
     )
     structured_llm_grader = llm.with_structured_output(TransferNewsGrader)
 
-    human_prompt = "News Article:\n\n {article}"
-
     system = f"""You are a researcher that determines the content type of an article.
         Check if the article refers to {SUBJECT} area.
         Provide a binary score 'yes' or 'no' to indicate whether the article is technical in nature."""
@@ -136,9 +135,6 @@ def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
     input_tokens = count_tokens(human_prompt, MODEL)
     print(f"Estimated input tokens: {input_tokens}")
 
-    # Make the call
-    result = evaluator.invoke({"article": article})
-
     # Count output tokens
     output_tokens = count_tokens(str(result), MODEL)
     print(f"Estimated output tokens: {output_tokens}")
@@ -154,7 +150,7 @@ def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
         encoding="utf-8",
     ) as f:
         f.write(
-            f"{get_report_date()}|ARTICLE_WRITER|EVALUATOR|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|{result}|\n"
+            f"{get_report_date()}|ARTICLE_WRITER|EVALUATOR|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|{input_tokens}|{output_tokens}|\n"
         )
     ##############################################
 
@@ -253,7 +249,7 @@ def editor_router(
         Also, confirm if the language used in the article is {LANGUAGE} and it meets the word count requirement. \n
         Provide four binary scores: one to indicate if the article can be posted ('yes' or 'no'), one for adequate word count ('yes' or 'no'), one for sensationalistic writing ('yes' or 'no'), and another if the language is {LANGUAGE} ('yes' or 'no')."""
     postability_grade_prompt = ChatPromptTemplate.from_messages(
-        [("system", postability_system), ("human", "News Article:\n\n {article}")]
+        [("system", postability_system), ("human", human_prompt)]
     )
 
     editor = postability_grade_prompt | structured_llm_postability_grader
@@ -264,7 +260,13 @@ def editor_router(
     print("Editor result: ", result)
     INPUT = article
     OUTPUT = result
+    input_tokens = count_tokens(human_prompt, MODEL)
+    print(f"Estimated input tokens: {input_tokens}")
 
+    # Count output tokens
+    output_tokens = count_tokens(str(result), MODEL)
+    print(f"Estimated output tokens: {output_tokens}")
+    print(f"Estimated total tokens: {input_tokens + output_tokens}")
     #################### EVALS04 ####################
     #
     # This can be standardised during development
@@ -276,7 +278,7 @@ def editor_router(
         encoding="utf-8",
     ) as f:
         f.write(
-            f"{get_report_date()}|ARTICLE_WRITER|PUBLISHER|{MODEL}|{TEMPERATURE}|{INPUT[:75]}...|{OUTPUT}|{result}|\n"
+            f"{get_report_date()}|ARTICLE_WRITER|PUBLISHER|{MODEL}|{TEMPERATURE}|{INPUT[:75]}...|{OUTPUT}|{input_tokens}|{output_tokens}|\n"
         )
     ##############################################
     num_words = len(INPUT.split())
