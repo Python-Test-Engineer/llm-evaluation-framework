@@ -95,7 +95,7 @@ def publisher(state: AgentState) -> AgentState:
 def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
     article = state["article_state"]
     INPUT = article
-    print(f"evaluator_router:\n INPUT: {article}")
+    print(f"evaluator_router:\n\tINPUT: {article}")
     MODEL = "gpt-4o-mini"
     TEMPERATURE = 0
 
