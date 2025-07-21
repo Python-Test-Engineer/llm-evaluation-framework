@@ -150,10 +150,11 @@ def evaluator_router(state: AgentState) -> Literal["editor", "not_relevant"]:
     output_tokens = count_tokens(str(result), MODEL)
     print(f"Estimated output tokens: {output_tokens}")
     print(f"Estimated total tokens: {input_tokens + output_tokens}")
+    # NOTES:
+    # In reality we add a trace_id to group the evaluations together and we add a span_id to identify the individual evaluation
     #################### EVALS01 ####################
     #
-    # This can be standardised during development
-    # DATE|COMPONENT_CODE|MODEL|TEMPERATURE|INPUT|OUTPUT and any optional fields
+    # TRACE_ID|DATETIME|APP|SPAN_ID|MODEL|TEMPERATURE|INPUT|OUTPUT|INPUT_TOKENS|OUTPUT_TOKENS|TIME and any optional fields
     #
     with open(
         "./src/case_study1/langgraph/01_article_writer_should_write.csv",
