@@ -1,12 +1,16 @@
 # LLM Eval for tool calling that can use a chain of two tools. We can check correct tools are called with correct inputs and also the correct chain flow occurs.
 
+import os
 from datetime import datetime
 
 from langchain_core.messages import HumanMessage, ToolMessage
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 from rich.console import Console
+from dotenv import load_dotenv, find_dotenv
 
+load_dotenv(find_dotenv(), override=True)
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 console = Console()
 
 MODEL = "gpt-4o-mini"
@@ -116,12 +120,13 @@ for message in messages:
             OUTPUT += message.content
         if message.type == "human":
             INPUT += message.content
+            INPUT = INPUT.replace("\n", "").replace("  ", " ").strip()
 
 
 #################### EVALS01 ####################
-log = f"{get_time_now()}|TOOL_CALLING|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|{tools_called}|"
+log = f"{get_time_now()}|TOOL_CALLING|{MODEL}|{TEMPERATURE}|{INPUT}|{OUTPUT}|{tools_called}"
 console.print(log)
-with open(f"{OUTPUT_DIR}/01_tool_calling.csv", "a") as f:
+with open(f"{OUTPUT_DIR}/02_tool_calling.csv", "a") as f:
     f.write(f"{log}\n")
 #################################################
 console.print(f"[green]Done! Logged to {OUTPUT_DIR}/01_tool_calling.csv[/]")
