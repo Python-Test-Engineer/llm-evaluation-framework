@@ -274,7 +274,7 @@ def editor_router(
     postability_system = f"""You are a grader assessing whether a news article is ready to be posted, if it meets the minimum word count of {CONTENT_LENGTH} words, is not written in a sensationalistic style, and if it is in {LANGUAGE}. \n
         Evaluate the article for grammatical errors, completeness, appropriateness for publication, and EXAGERATED sensationalism. \n
         Also, confirm if the language used in the article is {LANGUAGE} and it meets the word count requirement. \n
-        Provide four binary scores: one to indicate if the article can be posted ('yes' or 'no'), one for adequate word count ('yes' or 'no'), one for sensationalistic writing ('yes' or 'no'), and another if the language is {LANGUAGE} ('yes' or 'no')."""
+        Provide four binary scores: one to indicate if the article can be posted ('yes' or 'no'), one for adequate word count ('yes' or 'no'), one for not sensationalistic writing ('yes' or 'no'), and another if the language is {LANGUAGE} ('yes' or 'no')."""
     postability_grade_prompt = ChatPromptTemplate.from_messages(
         [("system", postability_system), ("human", human_prompt)]
     )
