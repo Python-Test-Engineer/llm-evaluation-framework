@@ -8,6 +8,7 @@ import os
 from datetime import datetime
 import warnings
 import time
+from random import randint
 
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
@@ -28,12 +29,14 @@ from config_langgraph import (
     CONTENT_LENGTH,
 )
 
+from datasets.blog_titles_list import blog_titles
 
-warnings.filterwarnings("ignore")
+print(len(blog_titles))
 console = Console()
 load_dotenv(find_dotenv(), override=True)
 
 console.print(f"\n[cyan]Using {PROVIDER} provider with model {MODEL}[/]")
+
 
 # MODEL = "gpt-4o-mini"
 # TEMPERATURE = 0
@@ -350,16 +353,23 @@ app = workflow.compile()
 
 # Run tests...
 
-print("\n======================================")
-print("FIRST EXAMPLE...\n")
-initial_state = {"article_state": "Planning permission for 49 England Road sought"}
-result = app.invoke(initial_state)
+NUM_TITLES = len(blog_titles)
+TITLE_LIMIT = randint(1, NUM_TITLES)  # Randomly choose a limit for testing
+for i in range(1):
+    print("\n======================================")
+    print("NON AI EXAMPLE...\n")
+    non_ai_article = blog_titles[i][1]
+    print(f"Non-AI article: {non_ai_article}")
+    initial_state = {"article_state": blog_titles[i][1]}
+    result = app.invoke(initial_state)
 
-print("Final result:", result)
+    # print("Final result:", result)
 
-print("\n======================================")
-print("SECOND EXAMPLE...\n")
-initial_state = {"article_state": "AI and Machine learning in modern business"}
-result = app.invoke(initial_state)
+    print("\n======================================")
+    print("AI EXAMPLE...\n")
+    ai_article = blog_titles[i][0]
+    print(f"AI article: {ai_article}")
+    initial_state = {"article_state": blog_titles[i][0]}
+    result = app.invoke(initial_state)
 
-print("Final article:\n\n", result["article_state"])
+    # print("Final article:\n\n", result["article_state"])
