@@ -1,3 +1,5 @@
+# A way to test env keys - run `python 01_py_llm.py` to see if the OpenAI API key is set.
+
 import os
 import json
 import requests
