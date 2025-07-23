@@ -57,60 +57,6 @@ sample_line = """2025-07-22-17-43-57|ARTICLE_WRITER|TRANSLATE|gpt-4o-mini|0|AI A
 print("Testing content extraction:")
 print("="*50)
 
-# Method 1: Basic extraction
+# # Method 1: Basic extraction
 content = extract_content_key(sample_line)
 print(f"Extracted content: {content}")
-
-print("\n" + "="*50)
-
-# Method 2: Safe extraction
-content_safe = extract_content_key_safe(sample_line)
-print(f"Extracted content (safe): {content_safe}")
-
-print("\n" + "="*50)
-
-# Show all fields for context
-fields = sample_line.split('|')
-print("All fields in the line:")
-for i, field in enumerate(fields):
-    if i == len(fields) - 1:  # Last field (the dictionary)
-        print(f"Field {i}: [DICTIONARY DATA - contains content key]")
-    else:
-        print(f"Field {i}: {field}")
-
-print(f"\nField positions:")
-print(f"0: Timestamp")
-print(f"1: ARTICLE_WRITER") 
-print(f"2: TRANSLATE")
-print(f"3: Model (gpt-4o-mini)")
-print(f"4: Some number (0)")
-print(f"5: Title")
-print(f"6: Score (0.80)")
-print(f"7: Dictionary with content key")
-
-# For processing multiple lines from a file
-def process_csv_file(filename):
-    """Process entire CSV file and extract all content keys"""
-    content_list = []
-    
-    with open(filename, 'r', encoding='utf-8') as file:
-        for line_num, line in enumerate(file, 1):
-            line = line.strip()
-            if not line:  # Skip empty lines
-                continue
-                
-            content = extract_content_key_safe(line)
-            if content:
-                content_list.append(content)
-            else:
-                print(f"Warning: Could not extract content from line {line_num}")
-    
-    return content_list
-
-# Example usage for file processing:
-print(f"\n" + "="*50)
-print("For processing a full CSV file:")
-print("# Usage example:")
-print("# content_keys = process_csv_file('your_file.csv')")
-print("# for i, content in enumerate(content_keys):")
-print("#     print(f'{i+1}: {content}')")
