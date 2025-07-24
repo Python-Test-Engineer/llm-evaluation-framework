@@ -38,7 +38,7 @@ def read_pipe_delimited_csv(file_path):
 
 def main():
     # Replace with the actual path to your pipe-delimited CSV file
-    file_path = "./src/case_study1/langgraph/datasets/run_01_30_titles/04_article_writer_publishable.csv"
+    file_path = "./04_article_writer_publishable.csv"
 
     # Read and print the 4th elements
     results = read_pipe_delimited_csv(file_path)
