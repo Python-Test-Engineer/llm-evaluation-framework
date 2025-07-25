@@ -86,7 +86,7 @@ class ArticlePostabilityGrader(BaseModel):
     is_not_sensationalistic: str = Field(
         description="The article is NOT written in a sensationalistic style, 'yes' or 'no'"
     )
-    is_language_french: str = Field(
+    is_correct_language: str = Field(
         description=f"The language of the article is {LANGUAGE}, 'yes' or 'no'"
     )
 
@@ -321,7 +321,7 @@ def editor_router(
     console.print(f"[green]Number of Words: {num_words}[/]")
     if result.can_be_posted == "yes":
         return "publisher"
-    elif result.is_language_french == "yes":
+    elif result.is_correct_language == "yes":
         if result.meets_word_count == "no" or result.is_not_sensationalistic == "no":
             return "expander"
     return "translator"
