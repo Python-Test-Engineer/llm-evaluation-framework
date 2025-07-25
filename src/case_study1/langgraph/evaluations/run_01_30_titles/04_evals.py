@@ -1,3 +1,5 @@
+# We want to check that if `can be posted` is `yes` then `meets word count`, `is not sensationalistic` and `is language french` are all `yes`.
+
 import csv
 
 
@@ -32,12 +34,12 @@ def parse_seventh_column_to_dict(csv_file_path):
 
 
 if __name__ == "__main__":
+    file_path = "./src/case_study1/langgraph/evaluations/run_01_30_titles/04_article_writer_publishable.csv"
 
-    results = parse_seventh_column_to_dict(
-        "./src/case_study1/langgraph/evaluations/run_01_30_titles/04_article_writer_publishable.csv"
-    )
+
+    results = parse_seventh_column_to_dict(file_path)
     for result in results:
-     
+
         if result["can_be_posted"] == "yes":
             if (
                 result["meets_word_count"] == "yes"
