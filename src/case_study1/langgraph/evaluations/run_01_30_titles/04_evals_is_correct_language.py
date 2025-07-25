@@ -34,7 +34,7 @@ def parse_seventh_column_to_dict(csv_file_path):
 
 
 if __name__ == "__main__":
-    file_path = "./src/case_study1/langgraph/evaluations/run_01_30_titles/04_article_writer_publishable.csv"
+    file_path = "./src/case_study1/langgraph/evaluations/run_01_30_titles/04_article_writer_publishable_is_correct_language.csv"
 
     results = parse_seventh_column_to_dict(file_path)
     for result in results:
@@ -43,7 +43,7 @@ if __name__ == "__main__":
             if (
                 result["meets_word_count"] == "yes"
                 and result["is_not_sensationalistic"] == "yes"
-                and result["is_language_french"] == "yes"  # now is_correct_langauge
+                and result["is_correct_language"] == "yes"  # now is_correct_langauge
             ):
                 print(f"{result} PASS")
             else:
