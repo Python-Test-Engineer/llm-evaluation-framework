@@ -355,7 +355,9 @@ app = workflow.compile()
 
 NUM_TITLES = len(blog_titles)
 TITLE_LIMIT = randint(1, NUM_TITLES)  # Randomly choose a limit for testing
-for i in range(1):
+
+# run for all 30 title pairs
+for i in range(len(blog_titles)):
     print("\n======================================")
     print("NON AI EXAMPLE...\n")
     non_ai_article = blog_titles[i][1]
